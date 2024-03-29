@@ -7,15 +7,25 @@ import { Input } from "@/components/ui/input"
 import { SignupValidation } from '@/lib/validation'
 import { z } from 'zod'
 import Loader from '@/components/shared/Loader'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useToast } from "@/components/ui/use-toast"
 import axios from 'axios'
 import { ToastAction } from '@radix-ui/react-toast'
 import { useState } from 'react'
+import { useUserContext } from '@/context/AuthContext'
+
 
 
 
 const SignupForm = () => {
+  let navigate=useNavigate()
+  const {accessToken ,setAccessToken,refreshToken,setRefreshToken } = useUserContext();
+  console.log()
+  console.log("accessToken");
+  console.log(accessToken);
+  console.log("000000000000");
+  console.log(refreshToken);
+  console.log("accessToken");
 
 
   const { toast } = useToast()
@@ -26,10 +36,11 @@ const SignupForm = () => {
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
     defaultValues: {
-      name: "",
-      username: "",
-      mail: "",
+      firstname: "",
+      lastname: "",
+      email: "",
       password: "",
+      role:"USER",
     },
   })
  
@@ -39,16 +50,17 @@ const SignupForm = () => {
     console.log(values);
 
     try {
-        const response = await axios.post("http://localhost:8080/users", values);
+        const response = await axios.post("http://localhost:8080/auth/signup", values);
         console.log(response);
 
         console.log(response.data);
         toast({
           variant: "destructive",
           title: "Success Sign Up",
-          description: response.data,
+          description: response.data.message,
           
         }) 
+        navigate('/sign-in');
         // Logging the response data
     } catch (error:any) {
         console.error(error.response.data);
@@ -82,10 +94,10 @@ const SignupForm = () => {
           className="flex flex-col gap-5 w-full mt-4">
           <FormField
             control={form.control}
-            name="name"
+            name="firstname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="shad-form_label">Name</FormLabel>
+                <FormLabel className="shad-form_label">Firstname</FormLabel>
                 <FormControl>
                   <Input type="text" className="shad-input" {...field} />
                 </FormControl>
@@ -96,10 +108,10 @@ const SignupForm = () => {
 
           <FormField
             control={form.control}
-            name="username"
+            name="lastname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="shad-form_label">Username</FormLabel>
+                <FormLabel className="shad-form_label">Lastname</FormLabel>
                 <FormControl>
                   <Input type="text" className="shad-input" {...field} />
                 </FormControl>
@@ -110,7 +122,7 @@ const SignupForm = () => {
 
           <FormField
             control={form.control}
-            name="mail"
+            name="email"
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="shad-form_label">Email</FormLabel>

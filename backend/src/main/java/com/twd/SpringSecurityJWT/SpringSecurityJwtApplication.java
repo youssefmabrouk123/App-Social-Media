@@ -1,13 +1,13 @@
-package com.ednet.last_dance;
+package com.twd.SpringSecurityJWT;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LastDanceApplication {
+public class SpringSecurityJwtApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(LastDanceApplication.class, args);
+		SpringApplication.run(SpringSecurityJwtApplication.class, args);
 	}
 
 }

@@ -1,10 +1,10 @@
-package com.ednet.last_dance;
+package com.twd.SpringSecurityJWT;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LastDanceApplicationTests {
+class SpringSecurityJwtApplicationTests {
 
 	@Test
 	void contextLoads() {
