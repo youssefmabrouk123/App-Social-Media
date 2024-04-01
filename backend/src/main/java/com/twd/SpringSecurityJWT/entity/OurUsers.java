@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,8 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 public class OurUsers implements UserDetails {
-    @Getter
-    @Setter
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -29,6 +29,18 @@ public class OurUsers implements UserDetails {
     private int age;
     private String bio;
     private String image;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user")
+    private List<SavedPost> savedPosts = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "user")
+    private List<Interaction> likedInteractions = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));

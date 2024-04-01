@@ -23,6 +23,14 @@ public class UserService {
     }
 
 
+
+
+    public OurUsers getUserById(Integer id) {
+        Optional<OurUsers> userOptional = userRepository.findById(id);
+        return userOptional.orElse(null); // Or handle the case where user is not found
+    }
+
+
 //    public Optional<OurUsers> getUserbyId(String id) {
 //        return userRepository.findByEmail(id);
 //    }

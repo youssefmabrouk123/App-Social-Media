@@ -9,9 +9,15 @@ export const INITIAL_USER = {
   firstname: "",
   lastname: "",
   email: "",
-  imageUrl: "",
+  role: "",
+  age: "",
   bio: "",
+  imageUrl: "",
+  post:[],
+  savedPosts:[],
+  likedInteractions:[]
 };
+
 
 const INITIAL_STATE = {
   user: INITIAL_USER,
@@ -107,9 +113,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 firstname: response.data.firstname,
                 lastname: response.data.lastname,
                 email: response.data.email,
-                imageUrl: response.data.image, // Assuming image is stored in 'image' property in the response
-                bio: response.data.bio
-              };
+                role:response.data.role,
+                age: response.data.age,
+                bio: response.data.bio,
+                imageUrl: response.data.image,
+                post:response.data.post,
+                savedPosts:response.data.savedPosts,
+                likedInteractions:response.data.likedInteractions
+                            };
               setUser(userData);
               setIsAuthenticated(true);
       

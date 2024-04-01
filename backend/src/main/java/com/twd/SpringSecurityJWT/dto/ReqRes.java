@@ -32,4 +32,8 @@ public class ReqRes {
     private String image;
     private List<Product> products;
     private OurUsers ourUsers;
+    private String caption;
+    private String filename;
+    private String location;
+    private String tags;
 }

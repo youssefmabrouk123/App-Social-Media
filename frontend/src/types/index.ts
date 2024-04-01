@@ -36,8 +36,13 @@ export type INavLink = {
     firstname: string;
     lastname: string;
     email: string;
-    imageUrl: string;
+    role: string;
+    age: string;
     bio: string;
+    imageUrl: string;
+    post:any[];
+    savedPosts:any[];
+    likedInteractions:any[];
   };
   
   export type INewUser = {

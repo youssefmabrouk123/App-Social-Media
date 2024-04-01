@@ -203,7 +203,7 @@
   }
 
   .file_uploader-box {
-    @apply flex-center flex-col p-7 h-80 lg:h-[612px];
+    @apply flex-center flex-col p-7 h-60 lg:h-[300px];
   }
 
   /* Grid Post List */

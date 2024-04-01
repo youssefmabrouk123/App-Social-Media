@@ -167,10 +167,10 @@ const handleSignin = async (users: z.infer<typeof SigninValidation>) => {
     <img src="/assets/images/ednet-high-resolution-logo-transparent.png" alt="logo" width={330} />
 
       <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">
-        Create a new account
+      Login to your account
       </h2>
       <p className="text-light-3 small-medium md:base-regular mt-2">
-         Please enter your details
+      Welcome back!
       </p>
 
       <form
@@ -211,19 +211,14 @@ const handleSignin = async (users: z.infer<typeof SigninValidation>) => {
               <Loader /> Loading...
             </div>
           ) : (
-            "Sign Up"
+            "Log In"
           )}  
           
         </Button>
 
         <p className="text-small-regular text-light-2 text-center mt-2">
-          Already have an account?
-          <Link
-            to="/sign-in"
-            className="text-primary-500 text-small-semibold ml-1">
-            Log in
-          </Link>
-        </p>
+             Don't have an account? <Link to="/sign-up" className="text-primary-500 text-small-semibold">Sign up</Link>
+           </p>
       </form>
     </div>
   </Form>
