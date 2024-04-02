@@ -36,20 +36,5 @@ public class UserController {
         return user;
     }
 
-//    @GetMapping("/user")
-//    public String getUser() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        return "Authenticated user: " + authentication.getName();
-//    }
+ }
 
-
-//    @GetMapping("/getUser/{id}")
-//    public <OurUsers>  getUserbyId(String id) {
-//        return userService.getUserbyId(id);
-//    }
-
-//    @GetMapping("/getid/{id}")
-//    public Optional<OurUsers> getUserById(String id) {
-//        return userService.getUserById(id);
-//    }
-}

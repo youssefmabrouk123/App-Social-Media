@@ -61,7 +61,15 @@ const PostForm = ({ post, action }: PostFormProps) => {
 
   
       // Axios POST request to the API endpoint
-      const response = await axios.post('http://localhost:8080/auth/posts/create', formData);
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.post('http://localhost:8080/posts/create', formData,{
+        headers: {
+          Authorization: `Bearer ${token}` // Include the Authorization header with the JWT token
+        }
+      });
+      
+    
+      
       
       console.log(response);
       if(response.data==!"Post created successfully"){
