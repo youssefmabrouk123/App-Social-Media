@@ -32,6 +32,7 @@ export type INavLink = {
   };
   
   export type IUser = {
+    filiere: string | undefined;
     id: string;
     firstname: string;
     lastname: string;

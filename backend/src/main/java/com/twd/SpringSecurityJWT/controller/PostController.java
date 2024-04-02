@@ -33,13 +33,13 @@
 
                 // Create a new Post object and save it
                 Post post = new Post();
+
                 //post.setId(id);
                 post.setCaption(caption);
                 post.setLocation(location);
                 post.setTags(tags);
                 post.setFilename(filename);
                 post.setCreationdate(LocalDateTime.now());
-                post.setLikes(0);
                 post.setUser(userService.getUserById(Integer.parseInt(userid)));
                 post.setLikedByUsers(Collections.emptyList());
                 post.setSavedByUsers(Collections.emptyList());

@@ -38,3 +38,14 @@ export const PostValidation = z.object({
   location: z.string().min(1, { message: "This field is required" }).max(1000, { message: "Maximum 1000 characters." }),
   tags: z.string(),
 });
+////
+// ============================================================
+// Profil
+// ============================================================
+export const ProfilValidation = z.object({
+  file: z.custom<File[]>(),
+  firstname: z.string().min(3,{ message: "This field is required" }).max(50),
+  lastname: z.string().min(3,{ message: "This field is required" }).max(50),
+  bio: z.string().min(2).max(500),
+  filiere: z.string().min(2).max(50),
+});

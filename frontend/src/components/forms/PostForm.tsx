@@ -80,7 +80,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
       toast({
         title :'Please try again'
       })
-      navigate('/');
+      //navigate('/');
 
       // If error occurs, throw the error
       throw error.response.data || error.message;

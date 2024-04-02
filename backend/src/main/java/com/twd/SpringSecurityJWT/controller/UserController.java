@@ -4,52 +4,77 @@ import com.twd.SpringSecurityJWT.entity.OurUsers;
 import com.twd.SpringSecurityJWT.repository.OurUserRepo;
 import com.twd.SpringSecurityJWT.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private UserService userService;
+        private UserService userService;
+        @Autowired
+        private OurUserRepo userRepository;
+
+        @GetMapping("/getall")
+        public ResponseEntity<List<OurUsers>> getAllUsers() {
+            List<OurUsers> users = userService.getAllUsers();
+            if (users.isEmpty()) {
+                return ResponseEntity.noContent().build(); // Return 204 No Content if no users are found
+            } else {
+                return ResponseEntity.ok(users); // Return the list of users
+            }
+        }
 
 
+        @GetMapping("/user")
+        public OurUsers getUser() {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            return userService.getUserByMail(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+        }
 
-    @GetMapping("/getall")
-    public List<OurUsers> getAllUsers() {
-        return userService.getAllUsers();
-    }
 
-    @GetMapping("/user")
-    public Optional<OurUsers> getUser() {
+        @DeleteMapping("/delete")
+        public String deleteUser() {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String username = authentication.getName();
+            OurUsers user = userService.getUserByMail(username)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            userRepository.delete(user);
+            return "User deleted successfully";
+        }
+
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateUser(@RequestBody OurUsers updatedUser) {
+        // Get authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-        Optional<OurUsers> user = userService.getUserByMail(username);
-        return user;
+
+        // Fetch the user from the database by email
+        OurUsers currentUser = userService.getUserByMail(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Use the ID of the authenticated user to update their information
+        updatedUser.setId(currentUser.getId());
+
+        // Update the user's information
+        userService.updateUser(updatedUser);
+
+        return ResponseEntity.ok("User updated successfully");
     }
-
-//    @GetMapping("/user")
-//    public String getUser() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        return "Authenticated user: " + authentication.getName();
-//    }
-
-
-//    @GetMapping("/getUser/{id}")
-//    public <OurUsers>  getUserbyId(String id) {
-//        return userService.getUserbyId(id);
-//    }
-
-//    @GetMapping("/getid/{id}")
-//    public Optional<OurUsers> getUserById(String id) {
-//        return userService.getUserById(id);
-//    }
 }
