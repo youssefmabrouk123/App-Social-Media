@@ -42,10 +42,21 @@ export const PostValidation = z.object({
 // ============================================================
 // Profil
 // ============================================================
+// export const ProfilValidation = z.object({
+//   file: z.custom<File[]>(),
+//   firstname: z.string().min(3,{ message: "This field is required" }).max(50),
+//   lastname: z.string().min(3,{ message: "This field is required" }).max(50),
+//   age: z.number().min(18).max(100),
+//   bio: z.string().min(2).max(500),
+//   filiere: z.string().min(2).max(100),
+// });
+
 export const ProfilValidation = z.object({
-  file: z.custom<File[]>(),
+  
   firstname: z.string().min(3,{ message: "This field is required" }).max(50),
   lastname: z.string().min(3,{ message: "This field is required" }).max(50),
+  age: z.string().min(2,{ message: "go home baby this is an engineer school" }),
   bio: z.string().min(2).max(500),
-  filiere: z.string().min(2).max(50),
+  filiere: z.string().min(2).max(100),
+  file: z.custom<File[]>(),
 });

@@ -1,6 +1,7 @@
 package com.twd.SpringSecurityJWT.controller;
 
 import com.twd.SpringSecurityJWT.entity.OurUsers;
+import com.twd.SpringSecurityJWT.entity.Post;
 import com.twd.SpringSecurityJWT.repository.OurUserRepo;
 import com.twd.SpringSecurityJWT.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +14,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
+    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage";
+
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
@@ -77,5 +84,42 @@ public class UserController {
 
         return ResponseEntity.ok("User updated successfully");
     }
+
+    @PutMapping("/up")
+    public String updatePost(
+                             @RequestParam("firstname") String firstname,
+                             @RequestParam("lastname") String lastname,
+                             @RequestParam("age") String age,
+                             @RequestParam("bio") String bio,
+                             @RequestParam("file") MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        OurUsers user = userService.getUserByMail(username).orElse(null);
+
+        if (user == null) {
+            return " error didn't exist";
+        } else {
+            try {
+                // Save the file to the filesystem
+                String filename = userService.saveImage(file);
+
+                // Create a new Post object and save it
+                //post.setId(id);
+
+                user.setFirstname(firstname);
+                user.setLastname(lastname);
+                user.setAge(Integer.parseInt(age));
+                user.setBio(bio);
+                user.setImage(filename);
+                userService.userUpdate(user);
+
+                return "Post created successfully";
+            } catch (IOException e) {
+                return "Error creating post: " + e.getMessage();
+            }
+        }
+
+    }
+
 }
 

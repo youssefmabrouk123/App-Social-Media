@@ -9,23 +9,20 @@ const LeftSidebar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user, setUser, setIsAuthenticated, isLoading } = useUserContext();
-  const [isSuccess,setIsSuccess]=useState(false)
+  const [isSuccess, setIsSuccess] = useState(false);
+  console.log(user);
 
-
-  const handleSignOut =() =>{
-
+  const handleSignOut = () => {
     localStorage.clear();
     setIsSuccess(true);
     setIsAuthenticated(false);
     setUser(INITIAL_USER);
-    //if it work it work 
+    //if it work it work
+  };
+  useEffect(() => {
+    if (isSuccess) navigate("/sign-in");
+  }, [isSuccess]);
 
-}
-useEffect(() => {
-  if (isSuccess) navigate('/sign-in');
-}, [isSuccess]);
-
-  
   // const handleSignOut = async (
   //   e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   // ) => {
@@ -49,19 +46,23 @@ useEffect(() => {
         </Link>
 
         {isLoading || !user.email ? (
-          <div className="h-7">
-            {/* <Loader /> */}
-          </div>
+          <div className="h-7">{/* <Loader /> */}</div>
         ) : (
           <Link to={`/profile/${user.id}`} className="flex gap-3 items-center">
             <img
-              src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+              // src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
+              src="C:/Users/dell/Desktop/App_Social_Media/backend/profileimage/profile-pic%20(1).png"
+
               alt="profile"
               className="h-14 w-14 rounded-full"
             />
             <div className="flex flex-col">
-              <p className="body-bold">{user.firstname} {user.lastname}</p>
-              <p className="small-regular text-light-3">@{user.firstname}_{user.lastname}_</p>
+              <p className="body-bold">
+                {user.firstname} {user.lastname}
+              </p>
+              <p className="small-regular text-light-3">
+                @{user.firstname}_{user.lastname}_
+              </p>
             </div>
           </Link>
         )}
@@ -75,10 +76,12 @@ useEffect(() => {
                 key={link.label}
                 className={`leftsidebar-link group ${
                   isActive && "bg-primary-500"
-                }`}>
+                }`}
+              >
                 <NavLink
                   to={link.route}
-                  className="flex gap-4 items-center p-4">
+                  className="flex gap-4 items-center p-4"
+                >
                   <img
                     src={link.imgURL}
                     alt={link.label}
@@ -97,7 +100,8 @@ useEffect(() => {
       <Button
         variant="ghost"
         className="shad-button_ghost"
-        onClick={() => handleSignOut()}>
+        onClick={() => handleSignOut()}
+      >
         <img src="/assets/icons/logout.svg" alt="logout" />
         <p className="small-medium lg:base-medium">Logout</p>
       </Button>
