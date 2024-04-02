@@ -20,7 +20,6 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FileUploader from "../shared/FileUploader";
 import axios from "axios";
-import { useState } from "react";
 
 type PostFormProps = {
   post?: Models.Document;
@@ -49,7 +48,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
     
     try {
       // Create FormData object to send multipart form data
-      let newPost:Boolean=false;
+      //let newPost:Boolean=false;
 
 
       const formData = new FormData();
@@ -61,15 +60,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
 
   
       // Axios POST request to the API endpoint
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.post('http://localhost:8080/posts/create', formData,{
-        headers: {
-          Authorization: `Bearer ${token}` // Include the Authorization header with the JWT token
-        }
-      });
-      
-    
-      
+      const response = await axios.post('http://localhost:8080/users/posts/create', formData);
       
       console.log(response);
       if(response.data==!"Post created successfully"){

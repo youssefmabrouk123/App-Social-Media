@@ -18,7 +18,8 @@ public class PostService {
     private PostRepository postRepository;
     // Define the upload directory
 
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\postimguploads";
+    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App-Social-Media-master\\backend\\postimguploads";
+    //private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\postimguploads";
 
     public String saveFile(MultipartFile file) throws IOException {
         // Ensure the upload directory exists
@@ -39,29 +40,15 @@ public class PostService {
         // Save the post to the database using repository methods
         postRepository.save(post);
     }
-
-    public void deletePost(Post post) {
-        postRepository.delete(post);
+    public List<Post> getAllPosts() {
+        // Retrieve all posts from the database using repository method
+        return postRepository.findAll();
     }
-
     public Post getPostById(Long postid) {
         // Save the post to the database using repository methods
-        return postRepository.findById(postid).orElse(null);
-
-    }
-
-//    public List<Post> getAllPosts() {
-//        return postRepository.findAll();
-//    }
-
-
-    public List<Post> getAllPosts() {
-        try {
-            return postRepository.findAll();
-        } catch (Exception e) {
-            // Log the error or handle it appropriately
-            e.printStackTrace();
-            return Collections.emptyList();
-        }
+        return postRepository.findById(postid).orElse(null);}
+    public void deletePostById(Long postId) {
+        // Delete the post from the database using repository method
+        postRepository.deleteById(postId);
     }
 }

@@ -74,6 +74,7 @@ public class UserService {
         return userRepository.save(currentUser);
     }
 
+
     public String saveImage(MultipartFile file) throws IOException {
         // Ensure the upload directory exists
         Path uploadPath = Paths.get(UPLOAD_DIR);

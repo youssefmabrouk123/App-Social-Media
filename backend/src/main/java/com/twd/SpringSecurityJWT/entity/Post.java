@@ -1,5 +1,7 @@
 package com.twd.SpringSecurityJWT.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -32,6 +34,9 @@ public class Post {
     public LocalDateTime getCreationdate() {
         return creationdate;
     }
+
+    //@JsonManagedReference
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private OurUsers user;
