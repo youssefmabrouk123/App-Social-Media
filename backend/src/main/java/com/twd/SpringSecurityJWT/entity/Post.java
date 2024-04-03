@@ -1,6 +1,7 @@
 package com.twd.SpringSecurityJWT.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -41,6 +42,7 @@ public class Post {
     @JoinColumn(name = "user_id",nullable = false)
     private OurUsers user;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "post")
     private List<SavedPost> savedByUsers = new ArrayList<>();
 
@@ -134,6 +136,5 @@ public class Post {
     public void setFilename(String filename) {
         this.filename = filename;
     }
-
-    // Constructors
+    
 }
