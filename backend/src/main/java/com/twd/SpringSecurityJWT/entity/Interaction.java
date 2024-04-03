@@ -1,19 +1,17 @@
 package com.twd.SpringSecurityJWT.entity;
 
 import jakarta.persistence.*;
-import org.apache.catalina.User;
-
+import lombok.Data;
 import java.time.LocalDateTime;
 
+@Data
 @Entity
-@Table(name = "interaction")
 public class Interaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime creationdate;
-
+    private LocalDateTime creationDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -23,7 +21,5 @@ public class Interaction {
     @JoinColumn(name = "post_id")
     private Post post;
 
-
-
-    // Constructors, getters, setters
+    // Constructors, getters, and setters
 }

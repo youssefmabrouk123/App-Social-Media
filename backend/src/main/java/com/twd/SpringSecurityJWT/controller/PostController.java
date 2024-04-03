@@ -71,11 +71,11 @@
 
         @PutMapping("update/{postId}")
         public String updatePost(@PathVariable Long postId,
-                                            @RequestParam("userid") String userid,
-                                            @RequestParam("caption") String caption,
-                                            @RequestParam("location") String location,
-                                            @RequestParam("tags") String tags,
-                                            @RequestParam("file") MultipartFile file) {
+                                 @RequestParam("userid") String userid,
+                                 @RequestParam("caption") String caption,
+                                 @RequestParam("location") String location,
+                                 @RequestParam("tags") String tags,
+                                 @RequestParam("file") MultipartFile file) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
             OurUsers userpost = userService.getUserByMail(username).orElse(null);
@@ -102,7 +102,7 @@
                 } catch (IOException e) {
                     return "Error creating post: " + e.getMessage();
                 }
-                }
+            }
 
             return "error didn't updated ";
         }

@@ -1,7 +1,9 @@
 package com.twd.SpringSecurityJWT.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -9,9 +11,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Data
 @Entity
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -30,10 +34,6 @@ public class Post {
     private LocalDateTime creationdate;
 
 
-
-    public LocalDateTime getCreationdate() {
-        return creationdate;
-    }
 
     //@JsonManagedReference
     @JsonIgnore
@@ -81,7 +81,17 @@ public class Post {
     }
 
 
-
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Post.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("caption='" + caption + "'")
+                .add("location='" + location + "'")
+                .add("tags='" + tags + "'")
+                .add("filename='" + filename + "'")
+                .add("creationdate=" + creationdate)
+                .toString();
+    }
 
     // Stores the filename of the uploaded file
 

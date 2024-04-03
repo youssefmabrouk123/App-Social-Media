@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.StringJoiner;
 
 @Data
 @Entity
@@ -20,7 +21,7 @@ public class OurUsers implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String firstname;
     private String lastname;
     private String email;
@@ -48,7 +49,21 @@ public class OurUsers implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role));
     }
 
-
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", OurUsers.class.getSimpleName() + "[", "]")
+                .add("id=" + id)
+                .add("firstname='" + firstname + "'")
+                .add("lastname='" + lastname + "'")
+                .add("email='" + email + "'")
+                .add("password='" + password + "'")
+                .add("role='" + role + "'")
+                .add("filiere='" + filiere + "'")
+                .add("age=" + age)
+                .add("bio='" + bio + "'")
+                .add("image='" + image + "'")
+                .toString();
+    }
     @Override
     public String getUsername() {
         return email;
