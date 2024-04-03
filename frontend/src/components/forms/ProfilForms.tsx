@@ -28,16 +28,15 @@ const ProfileForms = () => {
   const form = useForm<z.infer<typeof ProfilValidation>>({
     resolver: zodResolver(ProfilValidation),
     defaultValues: {
-      firstname: user ? user?.firstname : "",
-      lastname: user ? user?.lastname : "",
-      age: user ? user?.age : "",
-      bio: user ? user?.bio : "",
-      filiere: user ? user?.age : "",
+      firstname:user.firstname,
+      lastname: user.lastname,
+      age: user.age,
+      bio: user.bio,
+      filiere: user.filiere,
       file: [],
     },
   });
-  console;
-
+  
   // Handler
   const handleSubmit = async (value: z.infer<typeof ProfilValidation>) => {
     console.log(value);
@@ -45,7 +44,6 @@ const ProfileForms = () => {
 
     try {
       // Create FormData object to send multipart form data
-      let newPost: Boolean = false;
 
       const formData = new FormData();
       formData.append("firstname", value.firstname);
@@ -73,7 +71,7 @@ const ProfileForms = () => {
         });
       } else {
         toast({
-          title: "Post created successfully ✔",
+          title: "Profile updated successfully ✔",
         });
       }
       // If successful, return success message
@@ -145,6 +143,7 @@ const ProfileForms = () => {
                 <Textarea
                   className="shad-textarea custom-scrollbar"
                   {...field}
+                  defaultValue={user.bio}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -175,7 +174,13 @@ const ProfileForms = () => {
             <FormItem>
               <FormLabel className="shad-form_label">firstname</FormLabel>
               <FormControl>
-                <Input type="text" className="shad-input" {...field} />
+                <Input
+                  type="text"
+                  defaultValue={user.firstname}
+                  className="shad-input"
+                  {...field}
+                  //defaultValue={user.firstname}
+                />
               </FormControl>
               <FormMessage className="shad-form_message" />
             </FormItem>
@@ -189,7 +194,12 @@ const ProfileForms = () => {
             <FormItem>
               <FormLabel className="shad-form_label">lastname</FormLabel>
               <FormControl>
-                <Input type="text" className="shad-input" {...field} />
+                <Input
+                  type="text"
+                  className="shad-input"
+                  defaultValue={user.lastname}
+                  {...field}
+                />
               </FormControl>
               <FormMessage className="shad-form_message" />
             </FormItem>
@@ -208,6 +218,7 @@ const ProfileForms = () => {
                   className="shad-input"
                   min={20}
                   max={35}
+                  defaultValue={user.age}
                   {...field}
                 />
               </FormControl>
@@ -223,7 +234,12 @@ const ProfileForms = () => {
             <FormItem>
               <FormLabel className="shad-form_label">filiere</FormLabel>
               <FormControl>
-                <Input type="text" className="shad-input" {...field} />
+                <Input
+                  type="text"
+                  className="shad-input"
+                  {...field}
+                  defaultValue={user.filiere}
+                />
               </FormControl>
               <FormMessage className="shad-form_message" />
             </FormItem>

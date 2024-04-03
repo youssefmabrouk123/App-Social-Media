@@ -1,5 +1,6 @@
 package com.twd.SpringSecurityJWT.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -41,6 +42,7 @@ public class Post {
     @JoinColumn(name = "user_id",nullable = false)
     private OurUsers user;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "post")
     private List<SavedPost> savedByUsers = new ArrayList<>();
 
