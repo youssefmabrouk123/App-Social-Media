@@ -70,5 +70,19 @@ public class InteractionController {
         return ResponseEntity.ok(interactions); // Return interactions as JSON response with HTTP status 200 (OK)
     }
 
+    @DeleteMapping("/delete/{interactionId}")
+    public ResponseEntity<String> deleteInteractionById(@PathVariable Long interactionId) {
+        // Check if the interaction exists
+        Interaction interaction = interactionService.getInteractionById(interactionId);
+        if (interaction == null) {
+            return new ResponseEntity<>("Interaction not found", HttpStatus.NOT_FOUND);
+        }
 
+        // Perform authorization check if needed
+
+        // Delete the interaction
+        interactionService.deleteInteractionById(interactionId);
+
+        return new ResponseEntity<>("Interaction deleted successfully", HttpStatus.OK);
+    }
 }

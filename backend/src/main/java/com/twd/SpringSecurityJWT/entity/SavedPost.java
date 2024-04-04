@@ -15,15 +15,24 @@ public class SavedPost {
     private Long id;
     private LocalDateTime creationdate;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private OurUsers user;
 
-    @JsonIgnore
+    //@JsonIgnore
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
     // Constructors, getters, setters
+    @Override
+    public String toString() {
+        return "SavedPost{" +
+                "id=" + id +
+                ", creationdate=" + creationdate +
+                ", user=" + (user != null ? user.getId() : null) +
+                ", post=" + (post != null ? post.getId() : null) +
+                '}';
+    }
 }

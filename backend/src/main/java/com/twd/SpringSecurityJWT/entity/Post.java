@@ -36,17 +36,16 @@ public class Post {
 
 
 
-    //@JsonManagedReference
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private OurUsers user;
 
-    @JsonBackReference
+
     @OneToMany(mappedBy = "post")
     private List<SavedPost> savedByUsers = new ArrayList<>();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "post")
     private List<Interaction> likedByUsers = new ArrayList<>();
 

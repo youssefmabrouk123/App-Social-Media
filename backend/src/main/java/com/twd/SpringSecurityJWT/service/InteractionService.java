@@ -27,4 +27,11 @@ public class InteractionService {
         return interactionRepository.findByUserId(userId);
     }
 
+    public Interaction getInteractionById(Long interactionId) {
+        return interactionRepository.findById(interactionId).orElse(null);
+    }
+
+    public void deleteInteractionById(Long interactionId) {
+        interactionRepository.deleteById(interactionId);
+    }
 }
