@@ -1,6 +1,7 @@
 package com.twd.SpringSecurityJWT.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -36,11 +37,11 @@ public class OurUsers implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
-    @JsonBackReference
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<SavedPost> savedPosts = new ArrayList<>();
 
-
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Interaction> likedInteractions = new ArrayList<>();
 

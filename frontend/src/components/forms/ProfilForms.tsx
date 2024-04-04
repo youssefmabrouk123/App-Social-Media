@@ -55,7 +55,7 @@ const ProfileForms = () => {
       // Axios POST request to the API endpoint
       const token = localStorage.getItem("accessToken");
       const response = await axios.put(
-        "http://localhost:8080/users/up",
+        "http://localhost:8080/users/update",
         formData,
         {
           headers: {
