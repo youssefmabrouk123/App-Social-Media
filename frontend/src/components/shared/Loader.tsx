@@ -1,8 +1,5 @@
-import React from 'react'
-
-const Loader = () => {
-  return (
-    <div className="flex-center w-full">
+const Loader = () => (
+  <div className="flex-center w-full">
     <img
       src="/assets/icons/loader.svg"
       alt="loader"
@@ -11,7 +8,6 @@ const Loader = () => {
       className="animate-spin"
     />
   </div>
-  )
-}
+);
 
 export default Loader;
