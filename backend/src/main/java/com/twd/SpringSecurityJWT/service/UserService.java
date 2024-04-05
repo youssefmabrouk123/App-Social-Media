@@ -8,6 +8,7 @@ import com.twd.SpringSecurityJWT.repository.OurUserRepo;
 import com.twd.SpringSecurityJWT.repository.PostRepository;
 import com.twd.SpringSecurityJWT.repository.SavedPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,19 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+import com.twd.SpringSecurityJWT.entity.OurUsers;
+import com.twd.SpringSecurityJWT.repository.OurUserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class UserService {
@@ -36,7 +50,8 @@ public class UserService {
     @Autowired
     private SavedPostRepository savedPostRepository;
 
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage ";
+    //private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage ";
+    private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\profileimage";
 
 
     public List<OurUsers> getAllUsers() {
@@ -118,13 +133,29 @@ public class UserService {
         }
     }
 
-   /* public ResponseEntity<List<SavedPost>> getSavedPostsByUserId(Long userId) {
-        Optional<OurUsers> userOptional = userRepository.findById(userId);
+    public Resource getUserProfileImage() throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return null; // or throw UnauthorizedException
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        Optional<OurUsers> userOptional = userRepository.findByEmail(username);
         if (userOptional.isPresent()) {
             OurUsers user = userOptional.get();
-            return ResponseEntity.ok(user.getSavedPosts());
+            if (user.getImage() != null) {
+                Path imagePath = Paths.get(user.getImage());
+                Resource resource = new UrlResource(imagePath.toUri());
+                if (resource.exists() || resource.isReadable()) {
+                    return resource;
+                } else {
+                    throw new IOException("Failed to read the profile image");
+                }
+            } else {
+                throw new IOException("Profile image not found for the user");
+            }
         } else {
-            return ResponseEntity.notFound().build();
+            throw new IOException("User not found");
         }
-    }*/
+    }
 }

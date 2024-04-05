@@ -39,8 +39,6 @@ const ProfileForms = () => {
   
   // Handler
   const handleSubmit = async (value: z.infer<typeof ProfilValidation>) => {
-    console.log(value);
-    console.log(value.file[0]);
 
     try {
       // Create FormData object to send multipart form data
@@ -55,7 +53,7 @@ const ProfileForms = () => {
       // Axios POST request to the API endpoint
       const token = localStorage.getItem("accessToken");
       const response = await axios.put(
-        "http://localhost:8080/users/update",
+        "http://localhost:8080/users/up",
         formData,
         {
           headers: {

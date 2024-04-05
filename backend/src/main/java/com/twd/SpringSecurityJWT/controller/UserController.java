@@ -6,16 +6,21 @@ import com.twd.SpringSecurityJWT.entity.SavedPost;
 import com.twd.SpringSecurityJWT.repository.OurUserRepo;
 import com.twd.SpringSecurityJWT.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,13 +30,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import static java.lang.System.out;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.io.IOException;
+import com.twd.SpringSecurityJWT.entity.OurUsers;
+import com.twd.SpringSecurityJWT.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.core.io.ByteArrayResource;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage";
-
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
         private UserService userService;
@@ -81,24 +96,6 @@ public class UserController {
 
         return new ResponseEntity<>("User and related information deleted successfully", HttpStatus.OK);
     }
-    @PutMapping("/update")
-    public ResponseEntity<String> updateUser(@RequestBody OurUsers updatedUser) {
-        // Get authenticated user
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        // Fetch the user from the database by email
-        OurUsers currentUser = userService.getUserByMail(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // Use the ID of the authenticated user to update their information
-        updatedUser.setId(currentUser.getId());
-
-        // Update the user's information
-        userService.updateUser(updatedUser);
-
-        return ResponseEntity.ok("User updated successfully");
-    }
 
     @PutMapping("/up")
     public String updatePost(
@@ -147,6 +144,29 @@ public class UserController {
         }
     }
 
-   
+    @GetMapping("/profile-image")
+    public ResponseEntity<Resource> getUserProfileImage() throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        OurUsers user = userService.getUserByMail(username).orElse(null);
+
+        if (user == null || user.getImage() == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            Path imagePath = Paths.get(user.getImage());
+            Resource resource = new UrlResource(imagePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        }
+    }
 }
 
