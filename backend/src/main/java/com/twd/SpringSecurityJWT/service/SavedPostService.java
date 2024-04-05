@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -56,5 +57,12 @@ public class SavedPostService {
 
 //        user.getSavedPosts().remove(savedPost);
 //        post.getSavedByUsers().remove(savedPost);
+    }
+
+    public List<SavedPost> getSavedPostsByUsername(String username) {
+        OurUsers user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return savedPostRepository.findByUser(user);
     }
 }

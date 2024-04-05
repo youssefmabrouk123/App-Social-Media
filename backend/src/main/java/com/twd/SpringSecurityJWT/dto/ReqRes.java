@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.twd.SpringSecurityJWT.entity.OurUsers;
+import com.twd.SpringSecurityJWT.entity.Post;
 import com.twd.SpringSecurityJWT.entity.Product;
+import com.twd.SpringSecurityJWT.entity.SavedPost;
 import lombok.Data;
 
 import java.util.List;
@@ -36,4 +38,6 @@ public class ReqRes {
     private String filename;
     private String location;
     private String tags;
+    private List<Post> posts; // Add a field for posts
+    private List<SavedPost> savedPosts; // Add a field for saved posts
 }

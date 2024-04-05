@@ -16,7 +16,7 @@ import java.util.StringJoiner;
 
 @Data
 @Entity
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@Table(name = "post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -36,8 +36,9 @@ public class Post {
 
 
 
-    @JsonIgnore
+    //
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id",nullable = false)
     private OurUsers user;
 
