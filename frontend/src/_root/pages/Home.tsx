@@ -36,7 +36,7 @@ const Home = () => {
   }, []); // Empty dependency array to run the effect only once
 
   // Function to convert an array buffer to a base64-encoded string
-  const arrayBufferToBase64 = (buffer) => {
+  const arrayBufferToBase64 = (buffer:any) => {
     let binary = '';
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;

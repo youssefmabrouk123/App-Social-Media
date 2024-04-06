@@ -1,24 +1,11 @@
-import {
-  Route,
-  Routes,
-  Link,
-  Outlet,
-  useParams,
-  useLocation,
-} from "react-router-dom";
-
-import { useUserContext } from "@/context/AuthContext";
-
-import { Button } from "@/components/ui/button";
-import { Home } from ".";
-import Loader from "@/components/shared/Loader";
-import GridPostList from "@/components/shared/GridPostList";
-import LikedPosts from "./LikedPosts";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { CUser } from "@/types";
-import { any } from "zod";
-import UserDetail from "./UserDetail";
+import React, { useEffect, useState } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import Loader from '@/components/shared/Loader';
+import GridPostList from '@/components/shared/GridPostList';
+import { Button } from '@/components/ui/button';
+import { CUser } from '@/types';
+import { useUserContext } from '@/context/AuthContext';
 
 interface StabBlockProps {
   value: string | number;
@@ -31,7 +18,15 @@ const StatBlock = ({ value, label }: StabBlockProps) => (
     <p className="small-medium lg:base-medium text-light-2">{label}</p>
   </div>
 );
-
+const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+};
 const Profile = () => {
   const { id } = useParams();
   const { user } = useUserContext();
@@ -40,7 +35,6 @@ const Profile = () => {
   const [currentUser, setCurrentUser] = useState<CUser | null>(null);
   const [posts, setPosts] = useState<any>(null);
   const [flipper, setFlipper] = useState(true);
-
 
   useEffect(() => {
     const fetchData = async (id: string | undefined) => {
@@ -64,11 +58,21 @@ const Profile = () => {
             filiere: userDataResponse.data.filiere,
             post: userDataResponse.data.post,
           };
+
           const userPosts = userPostsResponse.data;
           setCurrentUser(userData);
           console.log(userData);
 
-          setPosts(userPosts);
+          const postsWithImages = await Promise.all(userPosts.map(async (post: any) => {
+            const imageResponse = await axios.get(`http://localhost:8080/users/posts/image/${post.id}`, {
+              responseType: 'arraybuffer'
+            });
+            const base64Image = arrayBufferToBase64(imageResponse.data);
+            const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+            return { ...post, imageUrl };
+          }));
+
+          setPosts(postsWithImages);
           console.log(userPosts);
           setIsLoading(false);
         }
@@ -93,9 +97,7 @@ const Profile = () => {
       <div className="profile-inner_container">
         <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
           <img
-            src={
-              currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"
-            }
+            src={currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt="profile"
             className="w-28 h-28 lg:h-36 lg:w-36 rounded-full"
           />
@@ -110,7 +112,7 @@ const Profile = () => {
             </div>
 
             <div className="flex gap-8 mt-10 items-center justify-center xl:justify-start flex-wrap z-20">
-              <StatBlock value={posts.length} label="Posts" />
+              <StatBlock value={posts ? posts.length : 0} label="Posts" />
               {/* <StatBlock value={20} label="" />
               <StatBlock value={20} label="Following" /> */}
             </div>
@@ -124,9 +126,7 @@ const Profile = () => {
             <div className={`${user.id == currentUser.id || "hidden"}`}>
               <Link
                 to={`/update-profile`}
-                className={`h-12 bg-dark-4 px-5 text-light-1 flex-center gap-2 rounded-lg ${
-                  user.id !== currentUser.id && "hidden"
-                }`}
+                className={`h-12 bg-dark-4 px-5 text-light-1 flex-center gap-2 rounded-lg ${user.id !== currentUser.id && "hidden"}`}
               >
                 <img
                   src={"/assets/icons/edit.svg"}
@@ -144,43 +144,41 @@ const Profile = () => {
       </div>
 
       <div className="flex max-w-5xl w-full" >
+        <Button
+          className={`profile-tab h-14 rounded-l-lg  ${flipper ? "" : "!bg-dark-3"} `}
+          onClick={() => setFlipper(true)}
+        >
+          <img
+            src={"/assets/icons/posts.svg"}
+            alt="posts"
+            width={20}
+            height={20}
+          />
+          Posts
+        </Button>
 
-      <Button
-        className={`profile-tab h-14 rounded-l-lg  ${ flipper==!true && "!bg-dark-3"} `}
-        onClick={()=>setFlipper(true)}
-        >    
-        <img
-        src={"/assets/icons/posts.svg"}
-        alt="posts"
-        width={20}
-        height={20}
-      />
-      Posts
-      </Button>
-
-
-      <Button
-        className={`profile-tab h-14 rounded-l-lg ml-7 ${ flipper==!false && "!bg-dark-3"} `}
-        onClick={()=>setFlipper(false)}>     
-        <img
-        src={"/assets/icons/follow.svg"}
-        alt="like"
-        width={20}
-        height={20}
-      />
-      User Details
-      </Button>
-
+        <Button
+          className={`profile-tab h-14 rounded-l-lg ml-7 ${!flipper ? "" : "!bg-dark-3"} `}
+          onClick={() => setFlipper(false)}
+        >
+          <img
+            src={"/assets/icons/follow.svg"}
+            alt="like"
+            width={20}
+            height={20}
+          />
+          User Details
+        </Button>
       </div>
-      {flipper ? <GridPostList posts={posts} /> : <UserDetail user={currentUser}/>}
 
-
-
-      
-   
+      {/* Post list rendering code */}
+      {posts && posts.length > 0 ? (
+        <GridPostList posts={posts} />
+      ) : (
+        <p>No posts found</p>
+      )}
     </div>
   );
 };
 
 export default Profile;
-
