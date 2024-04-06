@@ -50,12 +50,13 @@ const ProfileForms = () => {
       formData.append("lastname", value.lastname);
       formData.append("age", value.age);
       formData.append("bio", value.bio);
+      formData.append("filiere", value.filiere);
       formData.append("file", value.file[0]);
 
       // Axios POST request to the API endpoint
       const token = localStorage.getItem("accessToken");
       const response = await axios.put(
-        "http://localhost:8080/users/update",
+        "http://localhost:8080/users/up",
         formData,
         {
           headers: {

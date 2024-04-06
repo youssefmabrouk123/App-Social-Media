@@ -2,6 +2,7 @@ package com.twd.SpringSecurityJWT.controller;
 
 import com.twd.SpringSecurityJWT.entity.OurUsers;
 import com.twd.SpringSecurityJWT.entity.Post;
+import com.twd.SpringSecurityJWT.entity.SavedPost;
 import com.twd.SpringSecurityJWT.repository.OurUserRepo;
 import com.twd.SpringSecurityJWT.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +24,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import static java.lang.System.out;
+
 @RestController
 @RequestMapping("/users")
-public class UserController {
+public class    UserController {
     private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage";
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -44,7 +48,6 @@ public class UserController {
             }
         }
 
-
         @GetMapping("/user")
         public OurUsers getUser() {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -53,19 +56,31 @@ public class UserController {
                     .orElseThrow(() -> new RuntimeException("User not found"));
         }
 
+    @GetMapping("/userdetail/{id}")
+    public OurUsers getUserDetail(@PathVariable Long id) {
+        OurUsers user = userService.getUserById(id);
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
+        return user;
+    }
 
-        @DeleteMapping("/delete")
-        public String deleteUser() {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName();
-            OurUsers user = userService.getUserByMail(username)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
 
-            userRepository.delete(user);
-            return "User deleted successfully";
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        OurUsers user = userService.getUserByMail(username)
+                .orElse(null);
+
+        if (user == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
 
+        userService.deleteUserAndRelatedInfo(user);
 
+        return new ResponseEntity<>("User and related information deleted successfully", HttpStatus.OK);
+    }
     @PutMapping("/update")
     public ResponseEntity<String> updateUser(@RequestBody OurUsers updatedUser) {
         // Get authenticated user
@@ -91,6 +106,7 @@ public class UserController {
                              @RequestParam("lastname") String lastname,
                              @RequestParam("age") String age,
                              @RequestParam("bio") String bio,
+                             @RequestParam("filiere") String filiere,
                              @RequestParam("file") MultipartFile file) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -110,6 +126,7 @@ public class UserController {
                 user.setLastname(lastname);
                 user.setAge(Integer.parseInt(age));
                 user.setBio(bio);
+                user.setFiliere(filiere);
                 user.setImage(filename);
                 userService.userUpdate(user);
 
@@ -121,5 +138,17 @@ public class UserController {
 
     }
 
+    @GetMapping("/{userId}/posts")
+    public ResponseEntity<?> getPostsByUserId(@PathVariable Long userId) {
+        ResponseEntity<List<Post>> response = userService.getPostsByUserId(userId);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            List<Post> posts = response.getBody();
+            return ResponseEntity.ok(posts);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+   
 }
 

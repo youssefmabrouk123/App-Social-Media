@@ -45,6 +45,20 @@ export type INavLink = {
     savedPosts:any[];
     likedInteractions:any[];
   };
+
+  export type CUser = {
+    filiere: string | undefined;
+    id: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    role: string;
+    age: string;
+    bio: string;
+    imageUrl: string;
+    post:any[];
+  
+  };
   
   export type INewUser = {
     name: string;

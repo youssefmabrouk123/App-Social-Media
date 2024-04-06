@@ -20,7 +20,6 @@ const App = () => {
   return (
     <main className='flex h-screen'>
         <Routes>
-            <Route path="/Profile" element={<Profile/>} />
             <Route element={<AuthLayout/>}>
             {/* public routes */}
               <Route path="/sign-in" element={<SigninForm/>} />
@@ -36,9 +35,10 @@ const App = () => {
                 <Route path="/create-post" element={<CreatePost />} />
                 <Route path="/update-post/:id" element={<EditPost />} />
                 <Route path="/posts/:id" element={<PostDetails />} />
-                <Route path="/profile/:id/*" element={<Profile />} />
+                <Route path="/profile/:id/" element={<Profile />} />
                 <Route path="/update-profile/" element={<UpdateProfile />} />
                 <Route path="/update/" element={<UpdateProfile />} />
+
 
             </Route> 
 

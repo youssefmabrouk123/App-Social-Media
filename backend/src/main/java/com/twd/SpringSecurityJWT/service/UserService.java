@@ -2,15 +2,22 @@ package com.twd.SpringSecurityJWT.service;
 
 import com.twd.SpringSecurityJWT.entity.OurUsers;
 import com.twd.SpringSecurityJWT.entity.Post;
+import com.twd.SpringSecurityJWT.entity.SavedPost;
+import com.twd.SpringSecurityJWT.repository.InteractionRepository;
 import com.twd.SpringSecurityJWT.repository.OurUserRepo;
+import com.twd.SpringSecurityJWT.repository.PostRepository;
+import com.twd.SpringSecurityJWT.repository.SavedPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,9 +27,16 @@ public class UserService {
     private OurUserRepo userRepository;
     @Autowired
     private PostService postService;
+    @Autowired
+    private PostRepository postRepository;
 
+    @Autowired
+    private InteractionRepository interactionRepository;
 
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage ";
+    @Autowired
+    private SavedPostRepository savedPostRepository;
+
+    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App-Social-Media-master\\backend\\profileimage";
 
 
     public List<OurUsers> getAllUsers() {
@@ -34,24 +48,9 @@ public class UserService {
         return userRepository.findByEmail(username);
     }
 
-    public OurUsers getUserById(Integer id) {
+    public OurUsers getUserById(Long id) {
         Optional<OurUsers> userOptional = userRepository.findById(id);
         return userOptional.orElse(null); // Or handle the case where user is not found
-    }
-
-    public String saveFile(MultipartFile file) throws IOException {
-        // Ensure the upload directory exists
-        Path uploadPath = Paths.get(UPLOAD_DIR);
-        if (!Files.exists(uploadPath)) {
-            Files.createDirectories(uploadPath);
-        }
-
-        // Save the file to the upload directory
-        String filename = file.getOriginalFilename();
-        Path filePath = Paths.get(UPLOAD_DIR, filename);
-        Files.write(filePath, file.getBytes());
-
-        return UPLOAD_DIR + "/" + filename;
     }
 
     public OurUsers updateUser(OurUsers updatedUser) {
@@ -94,5 +93,38 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Transactional
+    public void deleteUserAndRelatedInfo(OurUsers user) {
+        // Delete user's interactions
+        interactionRepository.deleteByUser(user);
 
+        // Delete user's saved posts
+        savedPostRepository.deleteByUser(user);
+
+        // Delete user's posts
+        postRepository.deleteByUser(user);
+
+        // Delete user
+        userRepository.delete(user);
+    }
+
+    public ResponseEntity<List<Post>> getPostsByUserId(Long userId) {
+        Optional<OurUsers> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            OurUsers user = userOptional.get();
+            return ResponseEntity.ok(user.getPosts());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+   /* public ResponseEntity<List<SavedPost>> getSavedPostsByUserId(Long userId) {
+        Optional<OurUsers> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            OurUsers user = userOptional.get();
+            return ResponseEntity.ok(user.getSavedPosts());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }*/
 }

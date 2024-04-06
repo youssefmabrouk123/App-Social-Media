@@ -70,19 +70,24 @@ public class InteractionController {
         return ResponseEntity.ok(interactions); // Return interactions as JSON response with HTTP status 200 (OK)
     }
 
-    @DeleteMapping("/delete/{interactionId}")
-    public ResponseEntity<String> deleteInteractionById(@PathVariable Long interactionId) {
-        // Check if the interaction exists
-        Interaction interaction = interactionService.getInteractionById(interactionId);
-        if (interaction == null) {
-            return new ResponseEntity<>("Interaction not found", HttpStatus.NOT_FOUND);
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<String> deleteInteraction(@PathVariable Long postId) {
+        // Get the authenticated user
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        OurUsers user = userService.getUserByMail(username).orElse(null);
+
+        if (user == null) {
+            return new ResponseEntity<>("User not found", HttpStatus.UNAUTHORIZED);
         }
 
-        // Perform authorization check if needed
-
         // Delete the interaction
-        interactionService.deleteInteractionById(interactionId);
+        boolean deleted = interactionService.deleteInteractionByPostIdAndUserId(postId, user.getId());
 
-        return new ResponseEntity<>("Interaction deleted successfully", HttpStatus.OK);
+        if (deleted) {
+            return new ResponseEntity<>("Interaction deleted successfully", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Interaction not found for the specified post ID", HttpStatus.NOT_FOUND);
+        }
     }
 }

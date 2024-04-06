@@ -51,7 +51,7 @@
                 post.setTags(tags);
                 post.setFilename(filename);
                 post.setCreationdate(LocalDateTime.now());
-                post.setUser(userService.getUserById(Integer.parseInt(userid)));
+                post.setUser(userService.getUserById(Long.valueOf(userid)));
 //                post.setLikedByUsers(Collections.emptyList());
 //                post.setSavedByUsers(Collections.emptyList());
                 postService.savePost(post);
