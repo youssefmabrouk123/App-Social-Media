@@ -1,4 +1,3 @@
-import ProfileForm from "@/components/forms/ProfilForm";
 import ProfileForms from "@/components/forms/ProfilForms";
 
 const CreatePost = () => {
@@ -15,7 +14,6 @@ const CreatePost = () => {
           <h2 className="h3-bold md:h2-bold text-left w-full">Update Profil</h2>
         </div>
 
-        {/* <ProfileForms action="Create" /> */}
         <ProfileForms />
       </div>
     </div>

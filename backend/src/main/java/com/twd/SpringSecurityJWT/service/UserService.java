@@ -2,12 +2,12 @@ package com.twd.SpringSecurityJWT.service;
 
 import com.twd.SpringSecurityJWT.entity.OurUsers;
 import com.twd.SpringSecurityJWT.entity.Post;
-import com.twd.SpringSecurityJWT.entity.SavedPost;
 import com.twd.SpringSecurityJWT.repository.InteractionRepository;
 import com.twd.SpringSecurityJWT.repository.OurUserRepo;
 import com.twd.SpringSecurityJWT.repository.PostRepository;
 import com.twd.SpringSecurityJWT.repository.SavedPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +17,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.core.io.Resource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Service
 public class UserService {
@@ -36,7 +39,8 @@ public class UserService {
     @Autowired
     private SavedPostRepository savedPostRepository;
 
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App-Social-Media-master\\backend\\profileimage";
+    //private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage ";
+    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage";
 
 
     public List<OurUsers> getAllUsers() {
@@ -51,26 +55,6 @@ public class UserService {
     public OurUsers getUserById(Long id) {
         Optional<OurUsers> userOptional = userRepository.findById(id);
         return userOptional.orElse(null); // Or handle the case where user is not found
-    }
-
-    public OurUsers updateUser(OurUsers updatedUser) {
-        // Fetch the user from the database by id
-        OurUsers currentUser = userRepository.findById(updatedUser.getId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        //String filename = postService.saveFile(file);
-
-        // Update the user's information
-        currentUser.setFirstname(updatedUser.getFirstname());
-        currentUser.setLastname(updatedUser.getLastname());
-        currentUser.setAge(updatedUser.getAge());
-        currentUser.setBio(updatedUser.getBio());
-        currentUser.setFiliere(updatedUser.getFiliere());
-        currentUser.setImage(updatedUser.getImage());
-        // Update other fields as needed
-
-        // Save the updated user to the database
-        return userRepository.save(currentUser);
     }
 
 
@@ -118,13 +102,29 @@ public class UserService {
         }
     }
 
-   /* public ResponseEntity<List<SavedPost>> getSavedPostsByUserId(Long userId) {
-        Optional<OurUsers> userOptional = userRepository.findById(userId);
+    public Resource getUserProfileImage() throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return null; // or throw UnauthorizedException
+        }
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        Optional<OurUsers> userOptional = userRepository.findByEmail(username);
         if (userOptional.isPresent()) {
             OurUsers user = userOptional.get();
-            return ResponseEntity.ok(user.getSavedPosts());
+            if (user.getImage() != null) {
+                Path imagePath = Paths.get(user.getImage());
+                Resource resource = new UrlResource(imagePath.toUri());
+                if (resource.exists() || resource.isReadable()) {
+                    return resource;
+                } else {
+                    throw new IOException("Failed to read the profile image");
+                }
+            } else {
+                throw new IOException("Profile image not found for the user");
+            }
         } else {
-            return ResponseEntity.notFound().build();
+            throw new IOException("User not found");
         }
-    }*/
+    }
 }

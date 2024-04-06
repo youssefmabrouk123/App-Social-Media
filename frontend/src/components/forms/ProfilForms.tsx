@@ -39,8 +39,6 @@ const ProfileForms = () => {
   
   // Handler
   const handleSubmit = async (value: z.infer<typeof ProfilValidation>) => {
-    console.log(value);
-    console.log(value.file[0]);
 
     try {
       // Create FormData object to send multipart form data

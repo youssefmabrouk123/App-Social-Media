@@ -43,6 +43,8 @@ type IContextType = {
   setAccessToken:React.Dispatch<React.SetStateAction<string>>;
   refreshToken:string;
   setRefreshToken:React.Dispatch<React.SetStateAction<string>>;
+  profileImage: string;
+
 
 };
 
@@ -55,36 +57,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [accessToken,setAccessToken] = useState("");
   const [refreshToken,setRefreshToken] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
 
-
-  // const  checkAuthUser =  async() => {
-  //   setIsLoading(true);
-  //   try{
-  //     const response = await axios.get("http://localhost:8080/users/getall");
-
-  //     console.log(response.data);
-
-  //     if (response) {
-  //             setUser({
-  //               id: response.data.id,
-  //               firstname: response.data.firstname,
-  //               lastname: response.data.lastname,
-  //               email: response.data.email,
-  //               imageUrl: response.data.imageUrl,
-  //               bio: response.data.bio,
-  //             });
-  //             setIsAuthenticated(true);
-      
-  //             return true;
-  //            }
-  //            return false;
-  //              } catch (error) {
-  //                console.error(error);
-  //                return false;
-  //              } finally {
-  //                setIsLoading(false);
-  //              }
-  // };
   const  checkAuthUser =  async() => {
     setIsLoading(true);
     try{
@@ -116,7 +90,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 role:response.data.role,
                 age: response.data.age,
                 bio: response.data.bio,
-                imageUrl: response.data.image,
+                imageUrl: response.data.imageUrl,
                 post:response.data.post,
                 savedPosts:response.data.savedPosts,
                 likedInteractions:response.data.likedInteractions
@@ -134,6 +108,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                  setIsLoading(false);
                }
   };
+  const fetchUserProfileImage = async () => {
+    try {
+      // Fetch the user's authentication token from wherever it's stored (e.g., localStorage)
+      const token = localStorage.getItem("accessToken");
+
+      // Include the authentication token in the request headers
+      const headers = {
+        Authorization: `Bearer ${token}`, // Assuming it's a Bearer token
+      };
+
+      // Send the request with the authentication token included in the headers
+      const response = await axios.get('http://localhost:8080/users/profile-image', { headers, responseType: 'arraybuffer' });
+
+      // Handle the successful response and use the image data
+      console.log('User profile image:', response.data);
+
+      // Convert the binary image data to a base64-encoded string
+      const base64Image = arrayBufferToBase64(response.data);
+      const image = `data:image/png;base64,${base64Image}`;
+      setProfileImage(image); // Set the profile image URL in state
+
+      //const updatedUser = { ...user, imageUrl: image };
+      // Then update the state
+      //setUser(updatedUser);
+
+    } catch (error) {
+      // Handle errors
+      console.error('Failed to fetch user profile image:', error);
+    }
+  };
+  const arrayBufferToBase64 = (buffer:any) => {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  };
+
+
+
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     if (
@@ -142,7 +158,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accessToken === undefined
     ) {
       navigate("/sign-in");
-    }else{checkAuthUser();}
+    }else{checkAuthUser(); fetchUserProfileImage();}
 
     // checkAuthUser();
    }, []);
@@ -157,7 +173,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     accessToken,
     setAccessToken,
     refreshToken,
-    setRefreshToken
+    setRefreshToken,
+    profileImage
+
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
