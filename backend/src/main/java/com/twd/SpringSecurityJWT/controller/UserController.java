@@ -149,6 +149,27 @@ public class UserController {
             }
         }
     }
+
+
+
+    @GetMapping("/profileimagebyid/{id}")
+    public ResponseEntity<Resource> getUserProfileImageById(@PathVariable Long id) throws IOException {
+        OurUsers user = userService.getUserById(id);
+
+        if (user == null || user.getImage() == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            Path imagePath = Paths.get(user.getImage());
+            Resource resource = new UrlResource(imagePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        }
+    }
 }
 
 

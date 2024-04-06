@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import Loader from '@/components/shared/Loader';
 import GridPostList from '@/components/shared/GridPostList';
-import { Button } from '@/components/ui/button';
 import { CUser } from '@/types';
 import { useUserContext } from '@/context/AuthContext';
+import { Route, Routes, Link, Outlet, useParams, useLocation, } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Home } from ".";
+import LikedPosts from "./LikedPosts";
+import { any } from "zod";
+import UserDetail from "./UserDetail";
+
 
 interface StabBlockProps {
   value: string | number;
@@ -18,6 +23,8 @@ const StatBlock = ({ value, label }: StabBlockProps) => (
     <p className="small-medium lg:base-medium text-light-2">{label}</p>
   </div>
 );
+
+// Function to convert an array buffer to a base64-encoded string
 const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   let binary = '';
   const bytes = new Uint8Array(buffer);
@@ -27,6 +34,7 @@ const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   }
   return btoa(binary);
 };
+
 const Profile = () => {
   const { id } = useParams();
   const { user } = useUserContext();
@@ -35,6 +43,9 @@ const Profile = () => {
   const [currentUser, setCurrentUser] = useState<CUser | null>(null);
   const [posts, setPosts] = useState<any>(null);
   const [flipper, setFlipper] = useState(true);
+  const [profileImage, setProfileImage] = useState(null);
+
+
 
   useEffect(() => {
     const fetchData = async (id: string | undefined) => {
@@ -81,6 +92,32 @@ const Profile = () => {
         setIsLoading(false);
       }
     };
+    const fetchUserProfileImage = async (id: string | undefined) => {
+      try {
+        // Fetch the user's authentication token from wherever it's stored (e.g., localStorage)
+        const token = localStorage.getItem("accessToken");
+
+        // Include the authentication token in the request headers
+
+
+        // Send the request with the authentication token included in the headers
+        const response = await axios.get(`http://localhost:8080/users/profileimagebyid/${id}`, { responseType: 'arraybuffer' });
+
+        // Handle the successful response and use the image data
+        console.log('User profile image:', response.data);
+
+        // Convert the binary image data to a base64-encoded string
+        const base64Image = arrayBufferToBase64(response.data);
+        const imageUrl = `data:image/png;base64,${base64Image}`;
+        setProfileImage(imageUrl); // Set the profile image URL in state
+      } catch (error) {
+        // Handle errors
+        console.error('Failed to fetch user profile image:', error);
+      }
+    };
+
+    // Call the function to fetch the user profile image
+    fetchUserProfileImage(id);
 
     fetchData(id);
   }, [id]);
@@ -96,11 +133,8 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-inner_container">
         <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
-          <img
-            src={currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"}
-            alt="profile"
-            className="w-28 h-28 lg:h-36 lg:w-36 rounded-full"
-          />
+          <img src={profileImage || "/assets/icons/profile-placeholder.svg"} alt="profile"
+            className="w-28 h-28 lg:h-36 lg:w-36 rounded-full" />
           <div className="flex flex-col flex-1 justify-between md:mt-2">
             <div className="flex flex-col w-full">
               <h1 className="text-center xl:text-left h3-bold md:h1-semibold w-full">

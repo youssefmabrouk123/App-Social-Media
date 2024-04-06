@@ -30,6 +30,8 @@ const INITIAL_STATE = {
   setAccessToken:()=>"",
   refreshToken:"",
   setRefreshToken:()=>"",
+  profileImage: null
+
 };
 
 type IContextType = {
@@ -119,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
 
       // Send the request with the authentication token included in the headers
-      const response = await axios.get('http://localhost:8080/users/profile-image', { headers, responseType: 'arraybuffer' });
+      const response = await axios.get('http://localhost:8080/users/profile-image', {headers, responseType: 'arraybuffer' });
 
       // Handle the successful response and use the image data
       console.log('User profile image:', response.data);

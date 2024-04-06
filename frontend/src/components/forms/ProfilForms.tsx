@@ -24,7 +24,7 @@ import { useState } from "react";
 const ProfileForms = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useUserContext();
+  const { user , profileImage } = useUserContext();
   const form = useForm<z.infer<typeof ProfilValidation>>({
     resolver: zodResolver(ProfilValidation),
     defaultValues: {
@@ -159,7 +159,7 @@ const ProfileForms = () => {
               <FormControl>
                 <FileUploader
                   fieldChange={field.onChange}
-                  mediaUrl={user?.imageUrl}
+                  mediaUrl={profileImage}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -236,8 +236,8 @@ const ProfileForms = () => {
                 <Input
                   type="text"
                   className="shad-input"
-                  {...field}
                   defaultValue={user.filiere}
+                  {...field}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
