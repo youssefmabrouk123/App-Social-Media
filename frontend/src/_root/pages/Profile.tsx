@@ -1,14 +1,5 @@
-import {
-  Route,
-  Routes,
-  Link,
-  Outlet,
-  useParams,
-  useLocation,
-} from "react-router-dom";
-
+import {Route,Routes,Link,Outlet,useParams,useLocation,} from "react-router-dom";
 import { useUserContext } from "@/context/AuthContext";
-
 import { Button } from "@/components/ui/button";
 import { Home } from ".";
 import Loader from "@/components/shared/Loader";
@@ -31,6 +22,16 @@ const StatBlock = ({ value, label }: StabBlockProps) => (
     <p className="small-medium lg:base-medium text-light-2">{label}</p>
   </div>
 );
+// Function to convert an array buffer to a base64-encoded string
+const arrayBufferToBase64 = (buffer) => {
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+};
 
 const Profile = () => {
   const { id } = useParams();
@@ -40,6 +41,9 @@ const Profile = () => {
   const [currentUser, setCurrentUser] = useState<CUser | null>(null);
   const [posts, setPosts] = useState<any>(null);
   const [flipper, setFlipper] = useState(true);
+  const [profileImage, setProfileImage] = useState(null);
+
+  
 
 
   useEffect(() => {
@@ -77,6 +81,32 @@ const Profile = () => {
         setIsLoading(false);
       }
     };
+    const fetchUserProfileImage = async (id: string | undefined) => {
+      try {
+        // Fetch the user's authentication token from wherever it's stored (e.g., localStorage)
+        const token = localStorage.getItem("accessToken");
+
+        // Include the authentication token in the request headers
+       
+
+        // Send the request with the authentication token included in the headers
+        const response = await axios.get(`http://localhost:8080/users/profileimagebyid/${id}`, {  responseType: 'arraybuffer' });
+
+        // Handle the successful response and use the image data
+        console.log('User profile image:', response.data);
+
+        // Convert the binary image data to a base64-encoded string
+        const base64Image = arrayBufferToBase64(response.data);
+        const imageUrl = `data:image/png;base64,${base64Image}`;
+        setProfileImage(imageUrl); // Set the profile image URL in state
+      } catch (error) {
+        // Handle errors
+        console.error('Failed to fetch user profile image:', error);
+      }
+    };
+
+    // Call the function to fetch the user profile image
+    fetchUserProfileImage(id);
 
     fetchData(id);
   }, [id]);
@@ -94,7 +124,7 @@ const Profile = () => {
         <div className="flex xl:flex-row flex-col max-xl:items-center flex-1 gap-7">
           <img
             src={
-              currentUser.imageUrl || "/assets/icons/profile-placeholder.svg"
+              profileImage || "/assets/icons/profile-placeholder.svg"
             }
             alt="profile"
             className="w-28 h-28 lg:h-36 lg:w-36 rounded-full"

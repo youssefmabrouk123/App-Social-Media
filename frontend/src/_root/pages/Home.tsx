@@ -47,7 +47,7 @@ const Home = () => {
   };
   return (
     <div>
-     home
+      {profileImage && <img src={profileImage} className="h-14 w-14 rounded-full" alt="User Profile" />}
     </div>
   );
 };
