@@ -38,11 +38,8 @@ public class UserService {
     @Autowired
     private SavedPostRepository savedPostRepository;
 
-<<<<<<< HEAD
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App-Social-Media-master\\backend\\profileimage";
-=======
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage ";
->>>>>>> eaef49ca887c00b82e19341fac95f74047615a5d
+
+    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage";
     //private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\profileimage";
 
 

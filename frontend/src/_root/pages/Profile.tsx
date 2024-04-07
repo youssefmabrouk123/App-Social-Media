@@ -205,12 +205,9 @@ const Profile = () => {
         </Button>
       </div>
 
-      {/* Post list rendering code */}
-      {posts && posts.length > 0 ? (
-        <GridPostList posts={posts} />
-      ) : (
-        <p>No posts found</p>
-      )}
+      
+
+{flipper ? <GridPostList posts={posts} /> : <UserDetail user={currentUser}/>}
     </div>
   );
 };
