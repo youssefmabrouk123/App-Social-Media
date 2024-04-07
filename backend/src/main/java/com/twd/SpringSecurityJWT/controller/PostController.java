@@ -145,9 +145,7 @@
             if (post == null) {
                 return ResponseEntity.notFound().build();
             }
-
             String imagePath = post.getFilename();
-
             try {
                 Path file = Paths.get(imagePath);
                 ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(file));
@@ -161,6 +159,26 @@
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
         }
+
+        @GetMapping("/allposts")
+        public ResponseEntity<List<Post>> getAllPostsWithImages() {
+            List<Post> posts = postService.getAllPosts();
+
+            for (Post post : posts) {
+                try {
+                    String imagePath = post.getFilename();
+                    Path file = Paths.get(imagePath);
+                    byte[] imageData = Files.readAllBytes(file);
+                    post.setImageData(imageData);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+                }
+            }
+
+            return new ResponseEntity<>(posts, HttpStatus.OK);
+        }
+
     }
 
 
