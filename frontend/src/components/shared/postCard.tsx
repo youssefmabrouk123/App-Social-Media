@@ -21,7 +21,7 @@ const PostCard: React.FC<PostCardProps> = ({
   // Add more props as needed
 }) => {
   return (
-    <div className="post-card">
+    <div className="post-card" style={{ marginBottom: '30px' }}>
       <div className="flex-between">
         <div className="flex items-center gap-3">
           <Link to="/profile">
