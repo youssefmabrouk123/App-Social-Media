@@ -83,7 +83,7 @@ public class UserController {
             @RequestParam("age") String age,
             @RequestParam("bio") String bio,
             @RequestParam("filiere") String filiere,
-            @RequestParam("file") MultipartFile file) {
+            @RequestParam(value = "file", required = false) MultipartFile file) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         OurUsers user = userService.getUserByMail(username).orElse(null);
@@ -92,8 +92,12 @@ public class UserController {
             return " error didn't exist";
         } else {
             try {
-                // Save the file to the filesystem
-                String filename = userService.saveImage(file);
+                if (file != null && !file.isEmpty()) {
+
+                    String filename = userService.saveImage(file);
+                    user.setImage(filename);
+
+                }
 
                 // Create a new Post object and save it
                 //post.setId(id);
@@ -103,7 +107,9 @@ public class UserController {
                 user.setAge(Integer.parseInt(age));
                 user.setBio(bio);
                 user.setFiliere(filiere);
-                user.setImage(filename);
+
+
+
                 userService.userUpdate(user);
 
                 return "Post created successfully";

@@ -3,6 +3,7 @@ import axios from 'axios';
 import Loader from '@/components/shared/Loader';
 import { useParams } from 'react-router-dom';
 import { CUser } from '@/types';
+import PostCard from '@/components/shared/postCard';
 
 interface Post {
   id: number;
@@ -78,16 +79,15 @@ const AllUsers = () => {
       {posts && posts.length > 0 ? (
         <div>
           {posts.map((post) => (
-            <div key={post.id}>
-              <h2>{post.caption}</h2>
-              <p>Location: {post.location}</p>
-              <p>Tags: {post.tags}</p>
-              <p>Creation Date: {post.creationdate}</p>
-              {post.imageData && (
-                <img src={post.imageData} alt="Post" />
-              )}
-              <div>---------------------</div>
-            </div>
+            <PostCard
+              key={post.id}
+              creatorFirstname={currentUser.firstname}
+              creatorLastname={currentUser.lastname}
+              postCaption={post.caption}
+              postLocation={post.location}
+              postDate={post.creationdate}
+              postImage={post.imageData || ''}
+            />
           ))}
         </div>
       ) : (
