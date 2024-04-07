@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -39,8 +38,8 @@ public class UserService {
     @Autowired
     private SavedPostRepository savedPostRepository;
 
-    //private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage ";
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage";
+    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App-Social-Media-master\\backend\\profileimage";
+    //private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\profileimage";
 
 
     public List<OurUsers> getAllUsers() {

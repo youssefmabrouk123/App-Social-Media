@@ -5,6 +5,8 @@
     import com.twd.SpringSecurityJWT.service.PostService;
     import com.twd.SpringSecurityJWT.service.UserService;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.core.io.ByteArrayResource;
+    import org.springframework.http.MediaType;
     import org.springframework.security.access.prepost.PreAuthorize;
     import org.springframework.security.core.Authentication;
     import org.springframework.http.HttpHeaders;
@@ -13,9 +15,13 @@
     import org.springframework.security.core.context.SecurityContextHolder;
     import org.springframework.web.bind.annotation.*;
     import org.springframework.web.multipart.MultipartFile;
+    import org.springframework.core.io.Resource;
 
     import java.io.File;
     import java.io.IOException;
+    import java.nio.file.Files;
+    import java.nio.file.Path;
+    import java.nio.file.Paths;
     import java.time.LocalDateTime;
     import java.util.Collections;
     import java.util.List;
@@ -131,6 +137,29 @@
             // Delete the post
             postService.deletePostById(postId);
             return new ResponseEntity<>("Post deleted successfully", HttpStatus.OK);
+        }
+
+        @GetMapping("/image/{postId}")
+        public ResponseEntity<Resource> getPostImage(@PathVariable Long postId) {
+            Post post = postService.getPostById(postId);
+            if (post == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String imagePath = post.getFilename();
+
+            try {
+                Path file = Paths.get(imagePath);
+                ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(file));
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;" + imagePath )
+                        .body(resource);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            }
         }
     }
 

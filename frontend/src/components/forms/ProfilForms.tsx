@@ -30,7 +30,7 @@ const ProfileForms = () => {
     defaultValues: {
       firstname:user.firstname,
       lastname: user.lastname,
-      age: user.age,
+      age: user.age.toString(),
       bio: user.bio,
       filiere: user.filiere,
       file: [],
@@ -217,7 +217,7 @@ const ProfileForms = () => {
                   className="shad-input"
                   min={20}
                   max={35}
-                  defaultValue={user.age}
+                  defaultValue={user.age.toString()}
                   {...field}
                 />
               </FormControl>
