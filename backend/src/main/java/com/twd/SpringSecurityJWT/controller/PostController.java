@@ -28,6 +28,9 @@
     import java.util.Collections;
     import java.util.List;
 
+    import static java.lang.System.out;
+    import static java.lang.System.setOut;
+
     @RestController
 
     @RequestMapping("/users/posts")
@@ -187,8 +190,6 @@
                 List<Post> posts = postService.getAllPosts();
 
                 ReqRes reqRes = new ReqRes();
-                reqRes.setStatusCode(HttpStatus.OK.value());
-                reqRes.setMessage("Success");
 
                 List<ReqRes> postsWithUserData = new ArrayList<>();
 
@@ -199,16 +200,22 @@
                     post.setImageData(imageData);
 
                     OurUsers user = post.getUser();
+                    byte[] userProfileImage = getUserProfileImage(user.getId());
 
                     ReqRes postWithUserData = new ReqRes();
+
+                    postWithUserData.setPostId(post.getId()); // Set post ID
                     postWithUserData.setCaption(post.getCaption());
                     postWithUserData.setLocation(post.getLocation());
                     postWithUserData.setTags(post.getTags());
                     postWithUserData.setCreationdate(post.getCreationdate());
-                    postWithUserData.setFilename(post.getFilename());
+                    //postWithUserData.setFilename(post.getFilename());
+                    postWithUserData.setInteractions(post.getLikedByUsers().size());
+                    postWithUserData.setUserId(user.getId());
                     postWithUserData.setFirstname(user.getFirstname());
                     postWithUserData.setLastname(user.getLastname());
-                    postWithUserData.setImageData(imageData);
+                   // postWithUserData.setImageData(imageData);
+                    //postWithUserData.setImageProfilData(userProfileImage);
 
                     postsWithUserData.add(postWithUserData);
                 }
@@ -224,6 +231,21 @@
                 return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+
+
+        // Method to get user profile image data
+        private byte[] getUserProfileImage(Long userId) throws IOException {
+            Resource userProfileImageResource = userService.getUserProfileImg(userId);
+            if (userProfileImageResource != null) {
+                Path imagePath = userProfileImageResource.getFile().toPath();
+                return Files.readAllBytes(imagePath);
+            } else {
+                return null; // Define getDefaultProfileImage() to return the default image bytes
+            }
+        }
+
+
+
 
 
 

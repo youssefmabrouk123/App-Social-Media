@@ -17,6 +17,8 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReqRes {
 
+    private long postId;
+    private long userId;
     private int statusCode;
     private String error;
     private String message;
@@ -39,10 +41,13 @@ public class ReqRes {
     private String filename;
     private String location;
     private String tags;
+    private int interactions;
     private List<Post> posts; // Add a field for posts
     private List<SavedPost> savedPosts; // Add a field for saved posts
     private byte[] imageData;
+    private byte[] imageProfilData;
     private LocalDateTime creationdate;
     private List<ReqRes> post;
+
 
 }
