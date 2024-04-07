@@ -6,8 +6,7 @@ const Home = () => {
 
   return (
     <div>
-     
-      <PostCard></PostCard>
+           {/* <PostCard></PostCard> */}
     </div>
   );
 };
