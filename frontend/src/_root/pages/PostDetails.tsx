@@ -219,7 +219,7 @@ import PostStats from "@/components/shared/PostStats";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const arrayBufferToBase64 = (buffer) => {
+const arrayBufferToBase64 = (buffer:any) => {
   const bytes = new Uint8Array(buffer);
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) {
@@ -244,8 +244,8 @@ interface Post {
   userId: number;
   firstname: string;
   lastname: string;
-  liked: boolean;
-  saved: boolean;
+  liked?: boolean;
+  saved?: boolean;
   imageProfilData?: string; // Change to string as it will contain base64 string
 }
 
@@ -257,7 +257,7 @@ const PostDetails = () => {
   const [imageURL, setImageURL] = useState<string>('');
 
   useEffect(() => {
-    const fetchData = async (id) => {
+    const fetchData = async (id:any) => {
       const token = localStorage.getItem("accessToken");
 
       setIsLoading(true);
@@ -306,7 +306,7 @@ const PostDetails = () => {
       }
     };
 
-    const fetchPostDetail = async (id) => {
+    const fetchPostDetail = async (id:any) => {
       try {
         const response = await axios.get<UserPost>(`http://localhost:8080/users/posts/all/${id}`);
         const { data } = response;
@@ -330,8 +330,21 @@ const PostDetails = () => {
 
   const handleDeletePost = () => {};
 
+  console.log('----------------------')
+            console.log(post?.liked)
+            console.log(post?.saved)
+            console.log(userPost?.interactions)
+            console.log(post?.postId)
+
+            console.log('----------------------')
+
   return (
     <div className="post_details-container">
+      <h3 className="body-bold md:h3-bold w-full my-10">
+          Post Details
+        </h3>
+        <hr className="border w-full border-dark-4/80" />
+
       <div className="post_details-card">
         <img
           src={imageURL}
@@ -398,11 +411,13 @@ const PostDetails = () => {
           </div>
 
           <div className="w-full">
+            
+
             <PostStats
-              liked={post?.liked !== undefined ? post?.liked : false}
-              saved={post?.saved !== undefined ? post?.saved : false}
-              interactions={userPost?.interactions !== undefined ? userPost?.interactions : 0}
-              idPost={post?.postId !== undefined ? post?.postId : 0}
+              idPost={post?.postId }
+              liked={post?.liked}
+              saved={post?.saved }
+              interactions={userPost?.interactions}
             />
           </div>
         </div>
@@ -411,9 +426,7 @@ const PostDetails = () => {
       <div className="w-full max-w-5xl">
         <hr className="border w-full border-dark-4/80" />
 
-        <h3 className="body-bold md:h3-bold w-full my-10">
-          More Related Event
-        </h3>
+        
       </div>
     </div>
   );
