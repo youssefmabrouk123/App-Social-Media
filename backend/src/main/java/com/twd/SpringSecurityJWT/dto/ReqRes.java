@@ -17,11 +17,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReqRes {
 
-    private long postId;
-    private long userId;
-    private int interactions;
-
-    private int statusCode;
+    private Long postId;
+    private Long userId;
+    private Integer interactions;
+    private Integer statusCode;
     private String error;
     private String message;
     private String token;
@@ -33,7 +32,7 @@ public class ReqRes {
     private String email;
     private String role;
     private String password;
-    private int age;
+    private Integer age;
     private String bio;
     private String filiere;
     private String image;
@@ -51,5 +50,6 @@ public class ReqRes {
     private List<ReqRes> post;
     private boolean liked ;
     private boolean saved ;
+
 
 }

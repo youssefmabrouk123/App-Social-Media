@@ -28,8 +28,8 @@
     import java.util.ArrayList;
     import java.util.Collections;
     import java.util.List;
-
     import static java.lang.System.out;
+
 
     @RestController
 
@@ -201,18 +201,18 @@
 
                     OurUsers user = post.getUser();
 
-
                     ReqRes postWithUserData = new ReqRes();
 
-                    postWithUserData.setPostId(post.getId());
+
+                    postWithUserData.setPostId(post.getId()); // Set post ID
                     postWithUserData.setCaption(post.getCaption());
                     postWithUserData.setLocation(post.getLocation());
                     postWithUserData.setTags(post.getTags());
                     postWithUserData.setCreationdate(post.getCreationdate());
                     postWithUserData.setInteractions(post.getLikedByUsers().size());
                     postWithUserData.setUserId(user.getId());
-                    postWithUserData.setFirstname(user.getFirstname());
-                    postWithUserData.setLastname(user.getLastname());
+                    //postWithUserData.setFirstname(user.getFirstname());
+                    //postWithUserData.setLastname(user.getLastname());
                     postWithUserData.setImageData(imageData);
 
                     postsWithUserData.add(postWithUserData);
@@ -257,9 +257,9 @@
                     postWithUserData.setUserId(user.getId());
                     postWithUserData.setFirstname(user.getFirstname());
                     postWithUserData.setLastname(user.getLastname());
-                    postWithUserData.setImageProfilData(userProfileImage);
                     postWithUserData.setLiked(isPostLiked);
                     postWithUserData.setSaved(isPostSaved);
+                    postWithUserData.setImageProfilData(userProfileImage);
 
                     postsWithUserData.add(postWithUserData);
                 }
@@ -285,7 +285,6 @@
                 return null;
             }
         }
-
 
 
     }

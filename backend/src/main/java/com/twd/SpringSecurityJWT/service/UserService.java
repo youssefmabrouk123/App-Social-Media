@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -40,8 +43,8 @@ public class UserService {
 
 
 
-    //private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\profileimage";
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage";
+    private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\profileimage";
+    //private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\profileimage";
 
 
 
