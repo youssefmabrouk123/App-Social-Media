@@ -48,7 +48,7 @@ public class ReqRes {
     private byte[] imageProfilData;
     private LocalDateTime creationdate;
     private List<ReqRes> post;
-    private boolean liked ;
-    private boolean saved ;
+    private Boolean liked ;
+    private Boolean saved ;
 
 }

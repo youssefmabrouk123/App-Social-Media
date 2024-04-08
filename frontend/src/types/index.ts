@@ -46,6 +46,11 @@ export type INavLink = {
     likedInteractions:any[];
   };
 
+
+  
+
+
+
   export type CUser = {
     filiere: string | undefined;
     id: string;

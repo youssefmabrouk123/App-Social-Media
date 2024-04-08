@@ -6,100 +6,181 @@ import axios from "axios";
 import { useUserContext } from "@/context/AuthContext";
 
 
+interface PostStatsProps {
+  idPost:number;
+  interactions:number;
+  liked:boolean;
+  saved:boolean;
+  // Add more props as needed
+}
 
 
-const  savePost =  async(id: string | undefined) => {
-  setIsLoading(true);
-  try{
-    const token = localStorage.getItem('accessToken');
-    const response = await axios.post(`localhost:8080/users/savedposts/${id}/save`, {
-      headers: {
-        Authorization: `Bearer ${token}` // Include the Authorization header with the JWT token
-      }
-    });
-    console.log('*************');
-    console.log(response.data);
-    console.log('*************');
 
-
-    if (response) {
-            
-    
-            return true;
-           }
-           return false;
-             } catch (error) {
-               console.error(error);
-               return false;
-             } finally {
-               setIsLoading(false);
-             }
-};
-
-const  unSavePost =  async(id: string | undefined) => {
-  setIsLoading(true);
-  try{
-    const token = localStorage.getItem('accessToken');
-    const response = await axios.post(`localhost:8080/users/savedposts/${id}/unsave`, {
-      headers: {
-        Authorization: `Bearer ${token}` // Include the Authorization header with the JWT token
-      }
-    });
-    console.log('*************');
-    console.log(response.data);
-    console.log('*************');
-
-
-    if (response) {
-            
-    
-            return true;
-           }
-           return false;
-             } catch (error) {
-               console.error(error);
-               return false;
-             } finally {
-               setIsLoading(false);
-             }
-};
-
-const PostStats = ({postId}:any) => {
+const PostStats: React.FC<PostStatsProps> = ({
+  idPost,
+  liked,
+  saved,
+  interactions
+}) => {
   
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(saved);
+  const [isLiked, setIsLiked] = useState(liked);
+  const [liveInteraction, setLiveInteraction] = useState(interactions);
+
+
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUserContext();
 
+const savePost = async (id: number | undefined) => {
+  setIsLoading(true);
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.post(
+      `http://localhost:8080/users/savedposts/${id}/save`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("*************");
+    console.log(response.data);
+    console.log("*************");
 
+    return response.data; // Return more detailed response if needed
+  } catch (error) {
+    console.error("Error saving post:", error);
+    return false;
+  } finally {
+    setIsLoading(false);
+  }
+};
 
+const unSavePost = async (id: number | undefined) => {
+  setIsLoading(true);
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.post(
+      `http://localhost:8080/users/savedposts/${id}/unsave`,
+      null,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    console.log("*************");
+    console.log(response.data);
+    console.log("*************");
 
-  const handleLikePost = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>
-  ) => {
-    e.stopPropagation();
+    return response.data; // Return more detailed response if needed
+  } catch (error) {
+    console.error("Error unsaving post:", error);
+    return false;
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-    if(isSaved===false){
-      savePost(user.id);
-      setIsSaved(true);
-      
-    }else{
-      unSavePost(user.id);
-      setIsSaved(true);
+const handleSavePost = () => {
+  if (isSaved === false) {
+    savePost(idPost).then((response) => {
+      if (response) {
+        setIsSaved(true);
+      }
+    });
+  } else {
+    unSavePost(idPost).then((response) => {
+      if (response) {
+        setIsSaved(false);
+      }
+    });
+  }
+};
 
+  const likePost = async (id: number | undefined) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.post(
+        `http://localhost:8080/users/interaction/add/${id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsLiked(true);
+      console.log("Post liked:", response.data);
+      return true;
+    } catch (error) {
+      console.error("Error liking post:", error);
+      return false;
+    } finally {
+      setIsLoading(false);
     }
-
-
   };
 
-  const handleSavePost = () => {
+  const unLikePost = async (id: number | undefined) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.delete(
+        `http://localhost:8080/users/interaction/delete/${id}`,
+        
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setIsLiked(false);
+      console.log("Post unliked:", response.data);
+      return true;
+    } catch (error) {
+      console.error("Error unliking post:", error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  const handleLikePost = () => {
+    if (isLiked) {
+      unLikePost(idPost);
+    } else {
+      likePost(idPost);
+    }
+  };
+
+
+
+
+
+  const  getInteraction =  async(id: number | undefined) => {
     
+      const response = await axios.get(`http://localhost:8080/users/posts/getInteraction/${id}`);
+      console.log('*************');
+      console.log(response.data);
+      console.log('*************');
+      setLiveInteraction(response.data.interactions);}
+         
 
 
 
-   
-  };
 
+
+
+
+
+  useEffect(() => {
+    getInteraction(idPost);
+  }, [liked,isLiked]);
+
+
+  
  
 
   return (
@@ -107,14 +188,15 @@ const PostStats = ({postId}:any) => {
       className="flex justify-between items-center z-20 ">
       <div className="flex gap-2 mr-5">
         <img
-          src="/assets/icons/like.svg"
+          src={isLiked ? "/assets/icons/liked.svg" : "/assets/icons/like.svg"}
+
           alt="like"
           width={20}
           height={20}
-          onClick={(e) => handleLikePost(e)}
+         onClick={() => handleLikePost()}
           className="cursor-pointer"
         />
-        <p className="small-medium lg:base-medium">5001</p>
+        <p className="small-medium lg:base-medium">{liveInteraction}</p>
       </div>
 
       <div className="flex gap-2">
@@ -124,7 +206,7 @@ const PostStats = ({postId}:any) => {
           width={20}
           height={20}
           className="cursor-pointer"
-          onClick={(e) => handleSavePost()}
+          onClick={() => handleSavePost()}
         />
       </div>
     </div>

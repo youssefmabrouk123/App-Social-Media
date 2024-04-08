@@ -6,15 +6,13 @@ import { CUser } from '@/types';
 import PostCard from '@/components/shared/postCard';
 
 interface Post {
-  id: number;
-  caption: string;
+  postId: number;
+  userId: number;
   firstname: string;
   lastname: string;
-  location: string;
-  tags: string;
-  filename: string;
-  creationdate: string;
-  imageData?: string; // Change to string as it will contain base64 string
+  liked: boolean;
+  saved: boolean;
+  imageProfilData?: string; // Change to string as it will contain base64 string
 }
 interface ApiResponse {
   post: Post[]; // Assuming the post array is in the response
@@ -28,10 +26,16 @@ const Home = () => {
 
   useEffect(() => {
     const fetchData = async (id: string | undefined) => {
+      const token = localStorage.getItem("accessToken");
+
       setIsLoading(true);
       try {
-        const response = await axios.get<ApiResponse>(`http://localhost:8080/users/posts/allposts`);
-        console.log(response.data)
+        const response = await axios.get<ApiResponse>(`http://localhost:8080/users/posts/allpostsowner`,{
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the Authorization header with the JWT token
+          },
+        });
+        console.log(response.data.post)
 
         if (response.data && Array.isArray(response.data.post)) {
           // Assuming the user information is included in the response
@@ -44,7 +48,7 @@ const Home = () => {
           // Convert image data to base64 for each post
           const postsWithImageData = response.data.post.map((post: Post) => ({
             ...post,
-            imageData: post.imageData ? `data:image/jpeg;base64,${post.imageData}` : undefined,
+            imageProfilData: post.imageProfilData ? `data:image/jpeg;base64,${post.imageProfilData}` : undefined,
           }));
           setPosts(postsWithImageData);
         } else {
@@ -71,13 +75,14 @@ const Home = () => {
   <div  >
     {posts.map((post) => (
       <PostCard
-        key={post.id} // Unique key prop
+        key={post.postId}
+        postId={post.postId} 
+        userId={post.userId}
         creatorFirstname={post.firstname} // Assuming post.firstname and post.lastname are available
         creatorLastname={post.lastname}
-        postCaption={post.caption}
-        postLocation={post.location}
-        postDate={post.creationdate}
-        postImage={post.imageData || ''}
+        liked={post.liked}
+        saved={post.saved}
+        postImage={post.imageProfilData || ''}
       />
     ))}
   </div>

@@ -5,6 +5,7 @@
 
     import com.twd.SpringSecurityJWT.entity.Post;
     import com.twd.SpringSecurityJWT.entity.OurUsers;
+    import com.twd.SpringSecurityJWT.entity.SavedPost;
     import com.twd.SpringSecurityJWT.repository.OurUserRepo;
     import com.twd.SpringSecurityJWT.service.PostService;
     import com.twd.SpringSecurityJWT.service.UserService;
@@ -167,24 +168,6 @@
             }
         }
 
-        /*@GetMapping("/allposts")
-        public ResponseEntity<List<Post>> getAllPostsWithImages() {
-            List<Post> posts = postService.getAllPosts();
-
-            for (Post post : posts) {
-                try {
-                    String imagePath = post.getFilename();
-                    Path file = Paths.get(imagePath);
-                    byte[] imageData = Files.readAllBytes(file);
-                    post.setImageData(imageData);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-                }
-            }
-
-            return new ResponseEntity<>(posts, HttpStatus.OK);
-        }*/
 
         @GetMapping("/allposts")
         public ResponseEntity<ReqRes> getAllPostsWithImages() {
@@ -234,9 +217,22 @@
         @GetMapping("/allpostsowner")
         public ResponseEntity<ReqRes> getAllPostsOwner() {
             try {
-                List<Post> posts = postService.getAllPosts();
+
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                String username = authentication.getName();
+                OurUsers userCurr = userService.getUserByMail(username).orElse(null);
 
                 ReqRes reqRes = new ReqRes();
+
+                if (userCurr == null) {
+                    reqRes.setMessage("Error fetching posts");
+                    reqRes.setStatusCode(HttpStatus.FORBIDDEN.value());
+                    return new ResponseEntity<>(reqRes , HttpStatus.FORBIDDEN);
+                }
+
+
+                List<Post> posts = postService.getAllPosts();
+
 
                 List<ReqRes> postsWithUserData = new ArrayList<>();
 
@@ -246,11 +242,20 @@
 
                     byte[] userProfileImage = getUserProfileImage(user.getId());
 
-                    boolean isPostLiked = user.getLikedInteractions().stream()
-                            .anyMatch(interaction -> interaction.getPost().getId().equals(post.getId()));
 
-                    boolean isPostSaved = user.getSavedPosts().stream()
-                            .anyMatch(savedPost -> savedPost.getPost().getId().equals(post.getId()));
+                    List<Interaction> likes = userCurr.getLikedInteractions();
+                    boolean isPostLiked = false;
+                    if (likes != null) {
+                        isPostLiked = likes.stream()
+                                .anyMatch(interaction -> interaction.getPost().getId().equals(post.getId()));
+                    }
+
+                    List<SavedPost> savedPosts = userCurr.getSavedPosts();
+                    boolean isPostSaved = false;
+                    if (savedPosts != null) {
+                        isPostSaved = savedPosts.stream()
+                                .anyMatch(savedPost -> savedPost.getPost().getId().equals(post.getId()));
+                    }
 
                     ReqRes postWithUserData = new ReqRes();
 
@@ -276,6 +281,130 @@
                 return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+
+
+        @GetMapping("/all/{postId}")
+        public ResponseEntity<ReqRes> getPostById(@PathVariable Long postId) {
+            try {
+                // Fetch the post by its ID
+                Post post = postService.getPostById(postId);
+                if (post == null) {
+                    // If post not found, return 404 Not Found status
+                    return ResponseEntity.notFound().build();
+                }
+
+                // Convert the post data to the desired format
+                String imagePath = post.getFilename();
+                Path file = Paths.get(imagePath);
+                byte[] imageData = Files.readAllBytes(file);
+                post.setImageData(imageData);
+
+                OurUsers user = post.getUser();
+
+                ReqRes postWithUserData = new ReqRes();
+                postWithUserData.setPostId(post.getId());
+                postWithUserData.setCaption(post.getCaption());
+                postWithUserData.setLocation(post.getLocation());
+                postWithUserData.setTags(post.getTags());
+                postWithUserData.setCreationdate(post.getCreationdate());
+                postWithUserData.setInteractions(post.getLikedByUsers().size());
+                postWithUserData.setUserId(user.getId());
+                // Set other user data as needed
+                postWithUserData.setImageData(imageData);
+
+                return new ResponseEntity<>(postWithUserData, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+                ReqRes reqRes = new ReqRes();
+                reqRes.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                reqRes.setMessage("Error fetching post");
+                return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+
+
+
+
+
+
+        @GetMapping("/postsowner/{postId}")
+        public ResponseEntity<ReqRes> getPostsOwner(@PathVariable Long postId) {
+            try {
+
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                String username = authentication.getName();
+                OurUsers userCurr = userService.getUserByMail(username).orElse(null);
+
+                ReqRes reqRes = new ReqRes();
+
+                if (userCurr == null) {
+                    reqRes.setMessage("Error fetching posts");
+                    reqRes.setStatusCode(HttpStatus.FORBIDDEN.value());
+                    return new ResponseEntity<>(reqRes , HttpStatus.FORBIDDEN);
+                }
+
+
+                Post post = postService.getPostById(postId);
+                OurUsers user = post.getUser();
+                byte[] userProfileImage = getUserProfileImage(user.getId());
+                List<Interaction> likes = userCurr.getLikedInteractions();
+                boolean isPostLiked = false;
+                    if (likes != null) {
+                        isPostLiked = likes.stream()
+                                .anyMatch(interaction -> interaction.getPost().getId().equals(post.getId()));
+                    }
+
+                    List<SavedPost> savedPosts = userCurr.getSavedPosts();
+                    boolean isPostSaved = false;
+                    if (savedPosts != null) {
+                        isPostSaved = savedPosts.stream()
+                                .anyMatch(savedPost -> savedPost.getPost().getId().equals(post.getId()));
+                    }
+
+                    ReqRes postWithUserData = new ReqRes();
+
+                    postWithUserData.setPostId(post.getId());
+                    postWithUserData.setUserId(user.getId());
+                    postWithUserData.setFirstname(user.getFirstname());
+                    postWithUserData.setLastname(user.getLastname());
+                    postWithUserData.setLiked(isPostLiked);
+                    postWithUserData.setSaved(isPostSaved);
+                    postWithUserData.setImageProfilData(userProfileImage);
+
+
+
+
+
+
+                return new ResponseEntity<>(postWithUserData, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+                ReqRes reqRes = new ReqRes();
+                reqRes.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                reqRes.setMessage("Error fetching posts");
+                return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+
+
+
+
+
+
+
+        @GetMapping("/getInteraction/{postId}")
+        public ResponseEntity<ReqRes> getInteraction(@PathVariable Long postId) {
+
+                    Post post=postService.getPostById(postId);
+                    ReqRes postInteraction = new ReqRes();
+                postInteraction.setInteractions(post.getLikedByUsers().size());
+
+                return new ResponseEntity<>(postInteraction, HttpStatus.OK);
+
+        }
+
 
         private byte[] getUserProfileImage(Long userId) throws IOException {
             Resource userProfileImageResource = userService.getUserProfileImg(userId);
