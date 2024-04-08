@@ -6,15 +6,17 @@ import { CUser } from '@/types';
 import PostCard from '@/components/shared/postCard';
 
 interface Post {
-  id: number;
-  caption: string;
+  postId: number;
+  userId: number;
   firstname: string;
   lastname: string;
   location: string;
+  caption: string;
   tags: string;
   filename: string;
   creationdate: string;
-  imageData?: string; // Change to string as it will contain base64 string
+  imageData?: string;
+  interactions: number;
 }
 interface ApiResponse {
   post: Post[]; // Assuming the post array is in the response

@@ -1,5 +1,6 @@
     package com.twd.SpringSecurityJWT.controller;
     import com.twd.SpringSecurityJWT.dto.ReqRes;
+    import com.twd.SpringSecurityJWT.entity.Interaction;
     import com.twd.SpringSecurityJWT.entity.Post;
     import com.twd.SpringSecurityJWT.entity.OurUsers;
     import com.twd.SpringSecurityJWT.repository.OurUserRepo;
@@ -27,6 +28,8 @@
     import java.util.ArrayList;
     import java.util.Collections;
     import java.util.List;
+
+    import static java.lang.System.out;
 
     @RestController
 
@@ -187,8 +190,6 @@
                 List<Post> posts = postService.getAllPosts();
 
                 ReqRes reqRes = new ReqRes();
-                reqRes.setStatusCode(HttpStatus.OK.value());
-                reqRes.setMessage("Success");
 
                 List<ReqRes> postsWithUserData = new ArrayList<>();
 
@@ -200,12 +201,16 @@
 
                     OurUsers user = post.getUser();
 
+
                     ReqRes postWithUserData = new ReqRes();
+
+                    postWithUserData.setPostId(post.getId());
                     postWithUserData.setCaption(post.getCaption());
                     postWithUserData.setLocation(post.getLocation());
                     postWithUserData.setTags(post.getTags());
                     postWithUserData.setCreationdate(post.getCreationdate());
-                    postWithUserData.setFilename(post.getFilename());
+                    postWithUserData.setInteractions(post.getLikedByUsers().size());
+                    postWithUserData.setUserId(user.getId());
                     postWithUserData.setFirstname(user.getFirstname());
                     postWithUserData.setLastname(user.getLastname());
                     postWithUserData.setImageData(imageData);
@@ -225,9 +230,61 @@
             }
         }
 
+        @GetMapping("/allpostsowner")
+        public ResponseEntity<ReqRes> getAllPostsOwner() {
+            try {
+                List<Post> posts = postService.getAllPosts();
 
+                ReqRes reqRes = new ReqRes();
 
+                List<ReqRes> postsWithUserData = new ArrayList<>();
 
+                for (Post post : posts) {
+
+                    OurUsers user = post.getUser();
+
+                    byte[] userProfileImage = getUserProfileImage(user.getId());
+
+                    boolean isPostLiked = user.getLikedInteractions().stream()
+                            .anyMatch(interaction -> interaction.getPost().getId().equals(post.getId()));
+
+                    boolean isPostSaved = user.getSavedPosts().stream()
+                            .anyMatch(savedPost -> savedPost.getPost().getId().equals(post.getId()));
+
+                    ReqRes postWithUserData = new ReqRes();
+
+                    postWithUserData.setPostId(post.getId());
+                    postWithUserData.setUserId(user.getId());
+                    postWithUserData.setFirstname(user.getFirstname());
+                    postWithUserData.setLastname(user.getLastname());
+                    postWithUserData.setImageProfilData(userProfileImage);
+                    postWithUserData.setLiked(isPostLiked);
+                    postWithUserData.setSaved(isPostSaved);
+
+                    postsWithUserData.add(postWithUserData);
+                }
+
+                reqRes.setPost(postsWithUserData);
+
+                return new ResponseEntity<>(reqRes, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+                ReqRes reqRes = new ReqRes();
+                reqRes.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                reqRes.setMessage("Error fetching posts");
+                return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+        private byte[] getUserProfileImage(Long userId) throws IOException {
+            Resource userProfileImageResource = userService.getUserProfileImg(userId);
+            if (userProfileImageResource != null) {
+                Path imagePath = userProfileImageResource.getFile().toPath();
+                return Files.readAllBytes(imagePath);
+            } else {
+                return null;
+            }
+        }
 
 
 

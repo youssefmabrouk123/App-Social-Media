@@ -9,6 +9,10 @@ const GridPostList = ({
 }:  any) => {
   const { user } = useUserContext();
 
+  if (!posts || posts.length === 0) {
+    return <p>No posts available now !</p>;
+  }
+  
   return (
     <ul className="grid-container">
       {posts.map((post:any) => (

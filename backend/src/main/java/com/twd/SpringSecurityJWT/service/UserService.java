@@ -129,4 +129,27 @@ public class UserService {
             throw new IOException("User not found");
         }
     }
+
+    public Resource getUserProfileImg(Long userId) throws IOException {
+        Optional<OurUsers> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            OurUsers user = userOptional.get();
+            if (user.getImage() != null) {
+                Path imagePath = Paths.get(user.getImage());
+                Resource resource = new UrlResource(imagePath.toUri());
+                if (resource.exists() && resource.isReadable()) {
+                    return resource;
+                } else {
+                    // Image not found or not readable, return null or empty string
+                    return null; // or return new ByteArrayResource(new byte[0]);
+                }
+            } else {
+                // Image path is null, return null or empty string
+                return null; // or return new ByteArrayResource(new byte[0]);
+            }
+        } else {
+            // User not found, return null or empty string
+            return null; // or return new ByteArrayResource(new byte[0]);
+        }
+    }
 }
