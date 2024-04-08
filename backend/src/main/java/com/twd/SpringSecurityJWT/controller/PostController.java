@@ -1,4 +1,5 @@
     package com.twd.SpringSecurityJWT.controller;
+    import com.twd.SpringSecurityJWT.dto.ReqRes;
     import com.twd.SpringSecurityJWT.entity.Post;
     import com.twd.SpringSecurityJWT.entity.OurUsers;
     import com.twd.SpringSecurityJWT.repository.OurUserRepo;
@@ -23,6 +24,7 @@
     import java.nio.file.Path;
     import java.nio.file.Paths;
     import java.time.LocalDateTime;
+    import java.util.ArrayList;
     import java.util.Collections;
     import java.util.List;
 
@@ -160,7 +162,7 @@
             }
         }
 
-        @GetMapping("/allposts")
+        /*@GetMapping("/allposts")
         public ResponseEntity<List<Post>> getAllPostsWithImages() {
             List<Post> posts = postService.getAllPosts();
 
@@ -177,7 +179,98 @@
             }
 
             return new ResponseEntity<>(posts, HttpStatus.OK);
+        }*/
+
+        @GetMapping("/allposts")
+        public ResponseEntity<ReqRes> getAllPostsWithImages() {
+            try {
+                List<Post> posts = postService.getAllPosts();
+
+                ReqRes reqRes = new ReqRes();
+                reqRes.setStatusCode(HttpStatus.OK.value());
+                reqRes.setMessage("Success");
+
+                List<ReqRes> postsWithUserData = new ArrayList<>();
+
+                for (Post post : posts) {
+                    String imagePath = post.getFilename();
+                    Path file = Paths.get(imagePath);
+                    byte[] imageData = Files.readAllBytes(file);
+                    post.setImageData(imageData);
+
+                    OurUsers user = post.getUser();
+
+                    ReqRes postWithUserData = new ReqRes();
+                    postWithUserData.setCaption(post.getCaption());
+                    postWithUserData.setLocation(post.getLocation());
+                    postWithUserData.setTags(post.getTags());
+                    postWithUserData.setCreationdate(post.getCreationdate());
+                    postWithUserData.setFilename(post.getFilename());
+                    postWithUserData.setFirstname(user.getFirstname());
+                    postWithUserData.setLastname(user.getLastname());
+                    postWithUserData.setImageData(imageData);
+
+                    postsWithUserData.add(postWithUserData);
+                }
+
+                reqRes.setPost(postsWithUserData);
+
+                return new ResponseEntity<>(reqRes, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+                ReqRes reqRes = new ReqRes();
+                reqRes.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                reqRes.setMessage("Error fetching posts");
+                return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+
+
+
+        @GetMapping("/post/{id}")
+        public ResponseEntity<ReqRes> getPostsWithImages(@PathVariable Long id) {
+            try {
+                Post post = postService.getPostById(id);
+
+//                ReqRes reqRes = new ReqRes();
+//                reqRes.setStatusCode(HttpStatus.OK.value());
+//                reqRes.setMessage("Success");
+
+                //List<ReqRes> postsWithUserData = new ArrayList<>();
+
+                    String imagePath = post.getFilename();
+                    Path file = Paths.get(imagePath);
+                    byte[] imageData = Files.readAllBytes(file);
+                    post.setImageData(imageData);
+
+                    OurUsers user = post.getUser();
+
+                    ReqRes postWithUserData = new ReqRes();
+                    postWithUserData.setCaption(post.getCaption());
+                    postWithUserData.setLocation(post.getLocation());
+                    postWithUserData.setTags(post.getTags());
+                    postWithUserData.setCreationdate(post.getCreationdate());
+                    postWithUserData.setFilename(post.getFilename());
+                    postWithUserData.setImageData(imageData);
+                    postWithUserData.setNbrLikes(post.getLikedByUsers().size());
+
+
+
+
+
+
+
+                return new ResponseEntity<>(postWithUserData, HttpStatus.OK);
+            } catch (IOException e) {
+                e.printStackTrace();
+                ReqRes reqRes = new ReqRes();
+                reqRes.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                reqRes.setMessage("Error fetching posts");
+                return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+
+
 
 
 

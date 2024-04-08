@@ -2,15 +2,75 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 import { checkIsLiked } from "@/lib/utils";
+import axios from "axios";
+import { useUserContext } from "@/context/AuthContext";
 
 
-type PostStatsProps = {
-  post: Models.Document;
-  userId: string;
+
+
+const  savePost =  async(id: string | undefined) => {
+  setIsLoading(true);
+  try{
+    const token = localStorage.getItem('accessToken');
+    const response = await axios.post(`localhost:8080/users/savedposts/${id}/save`, {
+      headers: {
+        Authorization: `Bearer ${token}` // Include the Authorization header with the JWT token
+      }
+    });
+    console.log('*************');
+    console.log(response.data);
+    console.log('*************');
+
+
+    if (response) {
+            
+    
+            return true;
+           }
+           return false;
+             } catch (error) {
+               console.error(error);
+               return false;
+             } finally {
+               setIsLoading(false);
+             }
 };
 
-const PostStats = () => {
+const  unSavePost =  async(id: string | undefined) => {
+  setIsLoading(true);
+  try{
+    const token = localStorage.getItem('accessToken');
+    const response = await axios.post(`localhost:8080/users/savedposts/${id}/unsave`, {
+      headers: {
+        Authorization: `Bearer ${token}` // Include the Authorization header with the JWT token
+      }
+    });
+    console.log('*************');
+    console.log(response.data);
+    console.log('*************');
+
+
+    if (response) {
+            
+    
+            return true;
+           }
+           return false;
+             } catch (error) {
+               console.error(error);
+               return false;
+             } finally {
+               setIsLoading(false);
+             }
+};
+
+const PostStats = ({postId}:any) => {
   
+  const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUserContext();
+
+
 
 
   const handleLikePost = (
@@ -18,10 +78,24 @@ const PostStats = () => {
   ) => {
     e.stopPropagation();
 
+    if(isSaved===false){
+      savePost(user.id);
+      setIsSaved(true);
+      
+    }else{
+      unSavePost(user.id);
+      setIsSaved(true);
+
+    }
+
 
   };
 
   const handleSavePost = () => {
+
+    
+
+
 
    
   };
@@ -45,7 +119,7 @@ const PostStats = () => {
 
       <div className="flex gap-2">
         <img
-          src="/assets/icons/save.svg"
+          src={isSaved ? "/assets/icons/saved.svg" : "/assets/icons/save.svg"}
           alt="share"
           width={20}
           height={20}

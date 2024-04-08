@@ -9,6 +9,7 @@ import com.twd.SpringSecurityJWT.entity.Product;
 import com.twd.SpringSecurityJWT.entity.SavedPost;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -29,6 +30,7 @@ public class ReqRes {
     private String role;
     private String password;
     private int age;
+    private int nbrLikes;
     private String bio;
     private String filiere;
     private String image;
@@ -40,4 +42,8 @@ public class ReqRes {
     private String tags;
     private List<Post> posts; // Add a field for posts
     private List<SavedPost> savedPosts; // Add a field for saved posts
+    private byte[] imageData;
+    private LocalDateTime creationdate;
+    private List<ReqRes> post;
+
 }

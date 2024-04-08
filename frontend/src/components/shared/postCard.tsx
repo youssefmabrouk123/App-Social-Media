@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import PostStats from "./PostStats";
+import { formatDateString, multiFormatDateString } from "@/lib/utils";
 
 interface PostCardProps {
   creatorFirstname: string;
@@ -21,7 +22,7 @@ const PostCard: React.FC<PostCardProps> = ({
   // Add more props as needed
 }) => {
   return (
-    <div className="post-card">
+    <div className="post-card" style={{ marginBottom: '30px' }}>
       <div className="flex-between">
         <div className="flex items-center gap-3">
           <Link to="/profile">
@@ -38,7 +39,7 @@ const PostCard: React.FC<PostCardProps> = ({
             </p>
             <div className="flex-center gap-2 text-light-3">
               <p className="subtle-semibold lg:small-regular">
-                {postDate}
+                {multiFormatDateString(postDate)}
               </p>
               •
               <p className="subtle-semibold lg:small-regular">
@@ -70,7 +71,7 @@ const PostCard: React.FC<PostCardProps> = ({
           className="post-card_img"
         />
       </Link>
-      <PostStats />
+      <PostStats /*post={post.id}*/ />
     </div>
   );
 };
