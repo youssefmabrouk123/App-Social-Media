@@ -32,6 +32,7 @@ const Home = () => {
       try {
         const response = await axios.get<ApiResponse>(`http://localhost:8080/users/posts/allposts`);
         console.log(response.data)
+
         if (response.data && Array.isArray(response.data.post)) {
           // Assuming the user information is included in the response
           const userData = {

@@ -1,5 +1,8 @@
     package com.twd.SpringSecurityJWT.controller;
     import com.twd.SpringSecurityJWT.dto.ReqRes;
+
+    import com.twd.SpringSecurityJWT.entity.Interaction;
+
     import com.twd.SpringSecurityJWT.entity.Post;
     import com.twd.SpringSecurityJWT.entity.OurUsers;
     import com.twd.SpringSecurityJWT.repository.OurUserRepo;
@@ -27,6 +30,8 @@
     import java.util.ArrayList;
     import java.util.Collections;
     import java.util.List;
+    import static java.lang.System.out;
+
 
     @RestController
 
@@ -187,8 +192,6 @@
                 List<Post> posts = postService.getAllPosts();
 
                 ReqRes reqRes = new ReqRes();
-                reqRes.setStatusCode(HttpStatus.OK.value());
-                reqRes.setMessage("Success");
 
                 List<ReqRes> postsWithUserData = new ArrayList<>();
 
@@ -201,13 +204,17 @@
                     OurUsers user = post.getUser();
 
                     ReqRes postWithUserData = new ReqRes();
+
+
+                    postWithUserData.setPostId(post.getId()); // Set post ID
                     postWithUserData.setCaption(post.getCaption());
                     postWithUserData.setLocation(post.getLocation());
                     postWithUserData.setTags(post.getTags());
                     postWithUserData.setCreationdate(post.getCreationdate());
-                    postWithUserData.setFilename(post.getFilename());
-                    postWithUserData.setFirstname(user.getFirstname());
-                    postWithUserData.setLastname(user.getLastname());
+                    postWithUserData.setInteractions(post.getLikedByUsers().size());
+                    postWithUserData.setUserId(user.getId());
+                    //postWithUserData.setFirstname(user.getFirstname());
+                    //postWithUserData.setLastname(user.getLastname());
                     postWithUserData.setImageData(imageData);
 
                     postsWithUserData.add(postWithUserData);
@@ -224,43 +231,43 @@
                 return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-
-
-
-        @GetMapping("/post/{id}")
-        public ResponseEntity<ReqRes> getPostsWithImages(@PathVariable Long id) {
+        @GetMapping("/allpostsowner")
+        public ResponseEntity<ReqRes> getAllPostsOwner() {
             try {
-                Post post = postService.getPostById(id);
+                List<Post> posts = postService.getAllPosts();
 
-//                ReqRes reqRes = new ReqRes();
-//                reqRes.setStatusCode(HttpStatus.OK.value());
-//                reqRes.setMessage("Success");
+                ReqRes reqRes = new ReqRes();
 
-                //List<ReqRes> postsWithUserData = new ArrayList<>();
+                List<ReqRes> postsWithUserData = new ArrayList<>();
 
-                    String imagePath = post.getFilename();
-                    Path file = Paths.get(imagePath);
-                    byte[] imageData = Files.readAllBytes(file);
-                    post.setImageData(imageData);
+                for (Post post : posts) {
 
                     OurUsers user = post.getUser();
 
+                    byte[] userProfileImage = getUserProfileImage(user.getId());
+
+                    boolean isPostLiked = user.getLikedInteractions().stream()
+                            .anyMatch(interaction -> interaction.getPost().getId().equals(post.getId()));
+
+                    boolean isPostSaved = user.getSavedPosts().stream()
+                            .anyMatch(savedPost -> savedPost.getPost().getId().equals(post.getId()));
+
                     ReqRes postWithUserData = new ReqRes();
-                    postWithUserData.setCaption(post.getCaption());
-                    postWithUserData.setLocation(post.getLocation());
-                    postWithUserData.setTags(post.getTags());
-                    postWithUserData.setCreationdate(post.getCreationdate());
-                    postWithUserData.setFilename(post.getFilename());
-                    postWithUserData.setImageData(imageData);
-                    postWithUserData.setNbrLikes(post.getLikedByUsers().size());
 
+                    postWithUserData.setPostId(post.getId());
+                    postWithUserData.setUserId(user.getId());
+                    postWithUserData.setFirstname(user.getFirstname());
+                    postWithUserData.setLastname(user.getLastname());
+                    postWithUserData.setLiked(isPostLiked);
+                    postWithUserData.setSaved(isPostSaved);
+                    postWithUserData.setImageProfilData(userProfileImage);
 
+                    postsWithUserData.add(postWithUserData);
+                }
 
+                reqRes.setPost(postsWithUserData);
 
-
-
-
-                return new ResponseEntity<>(postWithUserData, HttpStatus.OK);
+                return new ResponseEntity<>(reqRes, HttpStatus.OK);
             } catch (IOException e) {
                 e.printStackTrace();
                 ReqRes reqRes = new ReqRes();
@@ -270,6 +277,15 @@
             }
         }
 
+        private byte[] getUserProfileImage(Long userId) throws IOException {
+            Resource userProfileImageResource = userService.getUserProfileImg(userId);
+            if (userProfileImageResource != null) {
+                Path imagePath = userProfileImageResource.getFile().toPath();
+                return Files.readAllBytes(imagePath);
+            } else {
+                return null;
+            }
+        }
 
 
 
