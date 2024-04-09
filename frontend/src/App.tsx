@@ -40,6 +40,7 @@ const App = () => {
                 <Route path="/update/" element={<UpdateProfile />} />
 
 
+
             </Route> 
 
         </Routes>
