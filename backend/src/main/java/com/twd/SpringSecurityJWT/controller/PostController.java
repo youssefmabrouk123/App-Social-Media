@@ -88,24 +88,59 @@
             // Retrieve all posts using PostService
             List<Post> posts = postService.getAllPosts();
             return new ResponseEntity<>(posts, HttpStatus.OK);
+
+
         }
 
+//        @PutMapping("update/{postId}")
+//        public String updatePost(@PathVariable Long postId,
+//                                 @RequestParam("caption") String caption,
+//                                 @RequestParam("location") String location,
+//                                 @RequestParam("tags") String tags,
+//                                 @RequestParam("file") MultipartFile file) {
+//            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//            String username = authentication.getName();
+//            OurUsers userpost = userService.getUserByMail(username).orElse(null);
+//
+//            // Check if the post exists
+//            Post post = postService.getPostById(postId);
+//            if (post == null) {
+//                return " error didn't exist";
+//            } else if (post.getUser().equals(userpost)) {
+//                try {
+//                    // Save the file to the filesystem
+//                    String filename = postService.saveFile(file);
+//
+//                    // Create a new Post object and save it
+//                    //post.setId(id);
+//                    post.setCaption(caption);
+//                    post.setLocation(location);
+//                    post.setTags(tags);
+//                    post.setFilename(filename);
+//                    post.setCreationdate(LocalDateTime.now());
+//                    postService.savePost(post);
+//
+//                    return "Post created successfully";
+//                } catch (IOException e) {
+//                    return "Error creating post: " + e.getMessage();
+//                }
+//            }
+//
+//            return "error didn't updated ";
+//        }
+//
+//
         @PutMapping("update/{postId}")
         public String updatePost(@PathVariable Long postId,
-                                 @RequestParam("userid") String userid,
                                  @RequestParam("caption") String caption,
                                  @RequestParam("location") String location,
                                  @RequestParam("tags") String tags,
                                  @RequestParam("file") MultipartFile file) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName();
-            OurUsers userpost = userService.getUserByMail(username).orElse(null);
+
 
             // Check if the post exists
             Post post = postService.getPostById(postId);
-            if (post == null) {
-                return " error didn't exist";
-            } else if (post.getUser().equals(userpost)) {
+
                 try {
                     // Save the file to the filesystem
                     String filename = postService.saveFile(file);
@@ -125,8 +160,12 @@
                 }
             }
 
-            return "error didn't updated ";
-        }
+
+
+
+
+
+
 
         //@PreAuthorize("hasRole('USER')")
         @DeleteMapping("/{postId}")
