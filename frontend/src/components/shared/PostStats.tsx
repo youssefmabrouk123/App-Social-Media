@@ -22,18 +22,18 @@ const PostStats: React.FC<PostStatsProps> = ({
   saved,
   interactions
 }) => {
-  console.log('+++++++++++++++')
-  console.log(idPost)
-  console.log(liked)
-  console.log(saved)
-  console.log(interactions)
-  console.log('+++++++++++++++')
+  // console.log('+++++++++++++++')
+  // console.log(idPost)
+  // console.log(liked)
+  // console.log(saved)
+  // console.log(interactions)
+  // console.log('+++++++++++++++')
   useEffect(() => {
     setIsSaved(saved);
     setIsLiked(liked);
     setLiveInteraction(interactions);
   }, [saved, liked, interactions]);
-  console.log('+++++++++++++++++')
+  
  
   
   const [isSaved, setIsSaved] = useState<boolean>();
@@ -42,10 +42,10 @@ const PostStats: React.FC<PostStatsProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUserContext();
 
-  console.log(isSaved)
-  console.log(isLiked)
+  // console.log(isSaved)
+  // console.log(isLiked)
 
-  console.log('++++++++++++++++++')
+  // console.log('++++++++++++++++++')
 
 
 

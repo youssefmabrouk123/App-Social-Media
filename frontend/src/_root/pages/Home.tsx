@@ -73,7 +73,7 @@ const Home = () => {
       {/* Post list rendering code */}
       {posts && posts.length > 0 ? (
   <div  >
-    {posts.map((post) => (
+    {posts.slice().reverse().map((post) => (
       <PostCard
         key={post.postId}
         postId={post.postId} 

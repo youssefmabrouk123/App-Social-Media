@@ -7,7 +7,10 @@
     import com.twd.SpringSecurityJWT.entity.OurUsers;
     import com.twd.SpringSecurityJWT.entity.SavedPost;
     import com.twd.SpringSecurityJWT.repository.OurUserRepo;
+    import com.twd.SpringSecurityJWT.repository.SavedPostRepository;
+    import com.twd.SpringSecurityJWT.service.InteractionService;
     import com.twd.SpringSecurityJWT.service.PostService;
+    import com.twd.SpringSecurityJWT.service.SavedPostService;
     import com.twd.SpringSecurityJWT.service.UserService;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.core.io.ByteArrayResource;
@@ -44,7 +47,11 @@
 
         @Autowired
         private UserService userService;
+        @Autowired
+        private InteractionService interactionService;
 
+        @Autowired
+        private SavedPostService savedPostService;
 
         @PostMapping("/create")
         public String createPost(@RequestParam("userid") String userid,
@@ -143,6 +150,9 @@
             }
 
             // Delete the post
+            interactionService.deleteInteractionsByPostId(postId);
+            savedPostService.deleteSavedPostByPostId(postId);
+
             postService.deletePostById(postId);
             return new ResponseEntity<>("Post deleted successfully", HttpStatus.OK);
         }

@@ -1,5 +1,5 @@
 
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { multiFormatDateString } from "@/lib/utils";
 import { useUserContext } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -7,8 +7,9 @@ import { Loader } from "lucide-react";
 import PostStats from "@/components/shared/PostStats";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { toast, useToast } from "@/components/ui/use-toast";
 
-const arrayBufferToBase64 = (buffer:any) => {
+const arrayBufferToBase64 = (buffer: any) => {
   const bytes = new Uint8Array(buffer);
   let binary = '';
   for (let i = 0; i < bytes.byteLength; i++) {
@@ -45,11 +46,13 @@ const PostDetails = () => {
   const [post, setPost] = useState<Post>();
   const [userPost, setUserPost] = useState<UserPost>();
   const [imageURL, setImageURL] = useState<string>('');
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
 
   useEffect(() => {
-    const fetchData = async (id:any) => {
+    const fetchData = async (id: any) => {
       const token = localStorage.getItem("accessToken");
-
       setIsLoading(true);
       try {
         const response = await axios.get<Post>(
@@ -96,7 +99,7 @@ const PostDetails = () => {
       }
     };
 
-    const fetchPostDetail = async (id:any) => {
+    const fetchPostDetail = async (id: any) => {
       try {
         const response = await axios.get<UserPost>(`http://localhost:8080/users/posts/all/${id}`);
         const { data } = response;
@@ -118,22 +121,41 @@ const PostDetails = () => {
 
   }, [id]);
 
-  const handleDeletePost = () => {};
+  const handleDelete = async (postId:any) => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await axios.delete(`http://localhost:8080/users/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      toast({
+        title :'Post deleted ✔ '
+      });
+      navigate('/');
+      console.log('Post deleted successfully:', response.data);
+    } catch (error) {
+      toast({
+        title :'Failed to delete post'
+      });
+      console.error('Failed to delete post:', error);
+    }
+  };
+  
+  // console.log('----------------------')
+  //           console.log(post?.liked)
+  //           console.log(post?.saved)
+  //           console.log(userPost?.interactions)
+  //           console.log(post?.postId)
 
-  console.log('----------------------')
-            console.log(post?.liked)
-            console.log(post?.saved)
-            console.log(userPost?.interactions)
-            console.log(post?.postId)
-
-            console.log('----------------------')
+  //           console.log('----------------------')
 
   return (
     <div className="post_details-container">
       <h3 className="body-bold md:h3-bold w-full my-10">
-          POST DETAILS
-        </h3>
-        {/* <hr className="border w-full border-dark-4/80" /> */}
+        POST DETAILS
+      </h3>
+      {/* <hr className="border w-full border-dark-4/80" /> */}
 
       <div className="post_details-card">
         <img
@@ -165,27 +187,26 @@ const PostDetails = () => {
             </Link>
 
             <div className="flex-center gap-4 ">
-                  <Button
-                  onClick={handleDeletePost}
-                  variant="ghost"
-                  className={`ost_details-delete_btn ${ parseInt(user.id, 10)=== post?.userId || "hidden"}`}>
-                  <img
-                    src={"/assets/icons/delete.svg"}
-                    alt="delete"
-                    width={24}
-                    height={24}
-                  />
-                </Button>
+              <Button
+                onClick={() => handleDelete(post?.postId)} variant="ghost"
+                className={`ost_details-delete_btn ${parseInt(user.id, 10) === post?.userId || "hidden"}`}>
+                <img
+                  src={"/assets/icons/delete.svg"}
+                  alt="delete"
+                  width={24}
+                  height={24}
+                />
+              </Button>
               <Link
-                  to={`/update-post/${post?.postId}`}
-                  className={`${ parseInt(user.id, 10)=== post?.userId || "hidden"}`}>
-                  <img
-                    src={"/assets/icons/edit.svg"}
-                    alt="edit"
-                    width={24}
-                    height={24}
-                  />
-                </Link>
+                to={`/update-post/${post?.postId}`}
+                className={`${parseInt(user.id, 10) === post?.userId || "hidden"}`}>
+                <img
+                  src={"/assets/icons/edit.svg"}
+                  alt="edit"
+                  width={24}
+                  height={24}
+                />
+              </Link>
             </div>
           </div>
 
@@ -201,12 +222,12 @@ const PostDetails = () => {
           </div>
 
           <div className="w-full">
-            
+
 
             <PostStats
-              idPost={post?.postId }
+              idPost={post?.postId}
               liked={post?.liked}
-              saved={post?.saved }
+              saved={post?.saved}
               interactions={userPost?.interactions}
             />
           </div>
@@ -216,7 +237,7 @@ const PostDetails = () => {
       <div className="w-full max-w-5xl">
         <hr className="border w-full border-dark-4/80" />
 
-        
+
       </div>
     </div>
   );

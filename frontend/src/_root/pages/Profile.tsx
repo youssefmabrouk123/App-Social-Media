@@ -40,7 +40,7 @@ const Profile = () => {
   const [currentUser, setCurrentUser] = useState<CUser | null>(null);
   const [posts, setPosts] = useState<any>(null);
   const [flipper, setFlipper] = useState(true);
-  const [profileImage, setProfileImage] = useState(null);
+  const [profileImage, setProfileImage] = useState("");
 
 
 

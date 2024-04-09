@@ -29,18 +29,13 @@ public class InteractionService {
         return interactionRepository.findByUserId(userId);
     }
 
-    public Interaction getInteractionById(Long interactionId) {
-        Optional<Interaction> interactionOptional = interactionRepository.findById(interactionId);
-        return interactionOptional.orElse(null);
-    }
-
-    public void deleteInteractionById(Long interactionId) {
-        interactionRepository.deleteById(interactionId);
-    }
-
     @Transactional
     public boolean deleteInteractionByPostIdAndUserId(Long postId, Long userId) {
         int deletedRecords = interactionRepository.deleteByPostIdAndUserId(postId, userId);
         return deletedRecords > 0;
+    }
+
+    public void deleteInteractionsByPostId(Long postId) {
+        interactionRepository.deleteByPostId(postId);
     }
 }

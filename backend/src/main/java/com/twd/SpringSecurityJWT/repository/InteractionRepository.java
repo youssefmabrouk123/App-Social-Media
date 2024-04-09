@@ -14,8 +14,10 @@ import java.util.List;
 public interface InteractionRepository extends JpaRepository<Interaction, Long> {
     List<Interaction> findByUserId(Long userId);
     List<Interaction> findByUser(OurUsers user);
-    void deleteByPostAndUser(Post post, OurUsers user);
     void deleteByUser(OurUsers user);
     @Transactional
     int deleteByPostIdAndUserId(Long postId, Long userId);
+
+    @Transactional
+    void deleteByPostId(Long postId);
 }

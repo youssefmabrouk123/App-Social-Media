@@ -56,7 +56,7 @@ const SavedPosts: React.FC = () => {
   }
 
   return (
-    <div style={{  margin: '40px auto', display: 'center' }}    > 
+    <div style={{  margin: '20px auto', padding:"40px  " }}    > 
       {posts.length > 0 ? (
         <GridPostList posts={posts} />
       ) : (

@@ -65,4 +65,8 @@ public class SavedPostService {
 
         return savedPostRepository.findByUser(user);
     }
+
+    public void deleteSavedPostByPostId(Long postId) {
+        savedPostRepository.deleteByPostId(postId);
+    }
 }
