@@ -6,9 +6,6 @@ import { CUser } from '@/types';
 import { useUserContext } from '@/context/AuthContext';
 import { Route, Routes, Link, Outlet, useParams, useLocation, } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Home } from ".";
-import LikedPosts from "./LikedPosts";
-import { any } from "zod";
 import UserDetail from "./UserDetail";
 
 

@@ -9,6 +9,8 @@ const GridPostList = ({ posts }: any) => {
     return <p>No posts available</p>;
   }
 
+  console.log(posts);
+  
   return (
     <ul className="grid-container">
       {posts.map((post: any) => (

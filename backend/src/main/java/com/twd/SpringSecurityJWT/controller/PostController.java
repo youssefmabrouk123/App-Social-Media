@@ -373,10 +373,6 @@
                     postWithUserData.setImageProfilData(userProfileImage);
 
 
-
-
-
-
                 return new ResponseEntity<>(postWithUserData, HttpStatus.OK);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -386,12 +382,6 @@
                 return new ResponseEntity<>(reqRes, HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
-
-
-
-
-
-
 
 
         @GetMapping("/getInteraction/{postId}")

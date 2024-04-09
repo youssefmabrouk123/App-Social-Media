@@ -19,6 +19,7 @@ public class ReqRes {
 
     private Long postId;
     private Long userId;
+    private Long savedId;
     private Integer interactions;
     private Integer statusCode;
     private String error;
