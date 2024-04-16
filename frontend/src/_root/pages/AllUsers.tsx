@@ -38,16 +38,15 @@ const AllUsers = () => {
 
   return (
     <div className="profile-container">
+      
       {/* User list rendering code */}
       {users && users.length > 0 ? (
         <div style={{
           display: 'flex',
         }}>
           {users.map((user) => (
-            <UserCard style={{
-              marginRight: '30px auto ',
-              paddingLeft: '20px',
-            }}
+            <UserCard 
+            style={{ marginRight: '30px auto ', paddingLeft: '20px', }}
               key={user.userId}
               user={user}
             />
