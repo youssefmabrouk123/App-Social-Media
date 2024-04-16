@@ -20,14 +20,30 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import FileUploader from "../shared/FileUploader";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type PostFormProps = {
   post?: Models.Document;
   action: "Create" | "Update";
 };
 
+
+interface UserPost {
+  postId: number;
+  userId: number;
+  interactions: number;
+  caption: string;
+  location: string;
+  tags: string;
+  imageData: ArrayBuffer;
+  creationdate: string;
+}
+
 const UpdatePostForm = ({ post, action }: PostFormProps) => {
+  const [userPost, setUserPost] = useState<UserPost>();
+  const [imageURL, setImageURL] = useState<string>('');
+
+  
   const navigate = useNavigate();
   const { id } = useParams();
   const [idPost, setIdPost] = useState<number>(parseInt(id));
@@ -37,12 +53,49 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
     defaultValues: {
-      caption: post ? post?.caption : "",
+      caption: ""  ,
       file: [],
-      location: post ? post.location : "",
-      tags: post ? post.tags.join(",") : "",
+      location: "",
+      tags:"",
+
     },
   });
+
+  const arrayBufferToBase64 = (buffer: any) => {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  };
+
+ 
+  
+  useEffect(() => {
+
+    const fetchPostDetail = async (id: any) => {
+      try {
+        const response = await axios.get<UserPost>(`http://localhost:8080/users/posts/all/${id}`);
+        const { data } = response;
+        setUserPost(data);
+        console.log(userPost);
+        const imageResponse = await axios.get(`http://localhost:8080/users/posts/image/${id}`, {
+          responseType: 'arraybuffer'
+        });
+        const base64Image = arrayBufferToBase64(imageResponse.data);
+        const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+        setImageURL(imageUrl);
+
+      } catch (error) {
+        console.error('Failed to fetch post details:', error);
+      }
+    };
+
+   
+    fetchPostDetail(id);
+
+  }, [id]);
 
 
   // Handler
@@ -108,6 +161,8 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
                 <Textarea
                   className="shad-textarea custom-scrollbar"
                   {...field}
+                  defaultValue={userPost?.caption}
+
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -132,40 +187,48 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="shad-form_label">Add Location</FormLabel>
-              <FormControl>
-                <Input type="text" className="shad-input" {...field} />
-              </FormControl>
-              <FormMessage className="shad-form_message" />
-            </FormItem>
-          )}
-        />
+<FormField
+  control={form.control}
+  name="location"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel className="shad-form_label">Add Location</FormLabel>
+      <FormControl>
+        <Input
+          type="text"
+          className="shad-input"
+          //fieldChange={field.onChange}
+          defaultValue={userPost?.location}
+          {...field}
 
-        <FormField
-          control={form.control}
-          name="tags"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="shad-form_label">
-                Add Tags (separated by comma " , ")
-              </FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Art, Expression, Learn"
-                  type="text"
-                  className="shad-input"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage className="shad-form_message" />
-            </FormItem>
-          )}
         />
+      </FormControl>
+      <FormMessage className="shad-form_message" />
+    </FormItem>
+  )}
+/>
+
+<FormField
+  control={form.control}
+  name="tags"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel className="shad-form_label">
+        Add Tags (separated by comma " , ")
+      </FormLabel>
+      <FormControl>
+        <Input
+          placeholder="Art, Expression, Learn"
+          defaultValue={userPost ? userPost.tags : ""}
+          type="text"
+          className="shad-input"
+          {...field}
+        />
+      </FormControl>
+      <FormMessage className="shad-form_message" />
+    </FormItem>
+  )}
+/>
 
         <div className="flex gap-4 items-center justify-end">
           <Button

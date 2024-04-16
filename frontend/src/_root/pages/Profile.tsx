@@ -138,7 +138,7 @@ const Profile = () => {
                 {currentUser.firstname + " " + currentUser.lastname}
               </h1>
               <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">
-                @{currentUser.firstname + "_" + currentUser.firstname}
+                @{currentUser.firstname + "_" + currentUser.lastname+"_"}
               </p>
             </div>
 
