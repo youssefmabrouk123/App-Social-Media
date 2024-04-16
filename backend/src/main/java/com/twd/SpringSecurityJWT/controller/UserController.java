@@ -1,5 +1,6 @@
 package com.twd.SpringSecurityJWT.controller;
 
+import com.twd.SpringSecurityJWT.dto.ReqRes;
 import com.twd.SpringSecurityJWT.entity.OurUsers;
 import com.twd.SpringSecurityJWT.entity.Post;
 import com.twd.SpringSecurityJWT.repository.OurUserRepo;
@@ -13,8 +14,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
@@ -176,6 +180,41 @@ public class UserController {
             }
         }
     }
+
+    ///////////////////
+
+    @GetMapping("/allusers")
+    public ResponseEntity<List<ReqRes>> getUsers() throws IOException {
+        List<OurUsers> users = userService.getAllUsers();
+        List<ReqRes> usersWithImageUrls = new ArrayList<>();
+
+        for (OurUsers user : users) {
+            ReqRes reqRes = new ReqRes();
+            reqRes.setUserId(user.getId());
+            reqRes.setFirstname(user.getFirstname());
+            reqRes.setLastname(user.getLastname());
+            reqRes.setEmail(user.getEmail());
+
+            byte[] userProfileImage = getUserProfileImage(user.getId());
+            reqRes.setImageProfilData(userProfileImage);
+
+            usersWithImageUrls.add(reqRes);
+        }
+
+        return ResponseEntity.ok(usersWithImageUrls); // Return ResponseEntity with status OK and body
+    }
+
+
+    private byte[] getUserProfileImage(Long userId) throws IOException {
+        Resource userProfileImageResource = userService.getUserProfileImg(userId);
+        if (userProfileImageResource != null) {
+            Path imagePath = userProfileImageResource.getFile().toPath();
+            return Files.readAllBytes(imagePath);
+        } else {
+            return null;
+        }
+    }
+    ///////////
 }
 
 
