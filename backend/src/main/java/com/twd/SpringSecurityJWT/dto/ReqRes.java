@@ -8,6 +8,8 @@ import com.twd.SpringSecurityJWT.entity.Post;
 import com.twd.SpringSecurityJWT.entity.Product;
 import com.twd.SpringSecurityJWT.entity.SavedPost;
 import lombok.Data;
+import org.apache.tomcat.util.file.ConfigurationSource;
+import org.springframework.core.io.Resource;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -51,5 +53,5 @@ public class ReqRes {
     private List<ReqRes> post;
     private Boolean liked ;
     private Boolean saved ;
-
+    private Resource imge ;
 }

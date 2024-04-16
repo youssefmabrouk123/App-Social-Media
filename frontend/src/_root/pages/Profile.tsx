@@ -53,6 +53,7 @@ const Profile = () => {
           axios.get(`http://localhost:8080/users/${id}/posts`),
         ]);
 
+        
         if (userDataResponse.data && userPostsResponse.data) {
           const userData: CUser = {
             id: userDataResponse.data.id,
