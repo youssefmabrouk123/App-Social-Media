@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,10 +82,11 @@ public class UserController {
     }
 
     @PutMapping("/up")
-    public String updatePost(
+    public String updateUser(
             @RequestParam("firstname") String firstname,
             @RequestParam("lastname") String lastname,
             @RequestParam("age") String age,
+            @RequestParam("birthdate") String birthDate,
             @RequestParam("bio") String bio,
             @RequestParam("filiere") String filiere,
             @RequestParam(value = "file", required = false) MultipartFile file) {
@@ -109,10 +111,9 @@ public class UserController {
                 user.setFirstname(firstname);
                 user.setLastname(lastname);
                 user.setAge(Integer.parseInt(age));
+                user.setBirthDate(birthDate);
                 user.setBio(bio);
                 user.setFiliere(filiere);
-
-
 
                 userService.userUpdate(user);
 
@@ -194,6 +195,7 @@ public class UserController {
             reqRes.setUserId(user.getId());
             reqRes.setFirstname(user.getFirstname());
             reqRes.setLastname(user.getLastname());
+            reqRes.setBirthDate(user.getBirthDate());
             reqRes.setEmail(user.getEmail());
 
             byte[] userProfileImage = getUserProfileImage(user.getId());

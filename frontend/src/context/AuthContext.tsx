@@ -10,6 +10,7 @@ export const INITIAL_USER = {
   lastname: "",
   email: "",
   role: "",
+  birthDate:"",
   age: "",
   bio: "",
   filiere:"",

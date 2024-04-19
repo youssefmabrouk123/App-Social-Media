@@ -2,15 +2,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import { PostValidation, ProfilValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
@@ -21,6 +13,21 @@ import FileUploader from "../shared/FileUploader";
 import axios from "axios";
 import { useState } from "react";
 
+function calculateAge(birthDateString: string): number {
+  const birthDate = new Date(birthDateString);
+  const currentDate = new Date();
+  let age = currentDate.getFullYear() - birthDate.getFullYear();
+  if (
+      birthDate.getMonth() > currentDate.getMonth() ||
+      (birthDate.getMonth() === currentDate.getMonth() &&
+          birthDate.getDate() > currentDate.getDate())
+  ) {
+      age--;
+  }
+
+  return age;
+}
+
 const ProfileForms = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -30,7 +37,8 @@ const ProfileForms = () => {
     defaultValues: {
       firstname: user.firstname,
       lastname: user.lastname,
-      age: user.age.toString(),
+      age: calculateAge(user.birthDate).toString(),
+      birthDate : user.birthDate ,
       bio: user.bio,
       filiere: user.filiere,
       file: [],
@@ -46,6 +54,7 @@ const ProfileForms = () => {
       formData.append("firstname", value.firstname);
       formData.append("lastname", value.lastname);
       formData.append("age", value.age);
+      formData.append("birthDate", value.birthDate);
       formData.append("bio", value.bio);
       formData.append("filiere", value.filiere);
       formData.append("file", value.file[0]);
@@ -165,19 +174,17 @@ const ProfileForms = () => {
           )}
         />
 
-        <FormField
+<FormField
           control={form.control}
-          name="age"
+          name="birthDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">Age</FormLabel>
+              <FormLabel className="shad-form_label">Birth date</FormLabel>
               <FormControl>
                 <Input
-                  type="number"
+                  type="text"
                   className="shad-input"
-                  min={18}
-                  max={30}
-                  defaultValue={user.age.toString()}
+                  defaultValue={user.birthDate}
                   {...field}
                 />
               </FormControl>

@@ -34,6 +34,7 @@ public class ReqRes {
     private String firstname;
     private String lastname;
     private String email;
+    private String birthDate;
     private String role;
     private String password;
     private Integer age;

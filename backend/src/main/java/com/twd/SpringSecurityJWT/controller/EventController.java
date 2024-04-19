@@ -8,7 +8,10 @@ import com.twd.SpringSecurityJWT.service.EventService;
 import com.twd.SpringSecurityJWT.service.ParticipationService;
 import com.twd.SpringSecurityJWT.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.twd.SpringSecurityJWT.entity.OurUsers;
@@ -108,7 +111,7 @@ public class EventController {
 
 
     @GetMapping("/allevents")
-    public ResponseEntity<ReqRes> getAllPostsWithImages() {
+    public ResponseEntity<ReqRes> getAllEventsWithImages() {
         try {
             List<Event> events = eventService.getAllEvents();
 
@@ -155,6 +158,61 @@ public class EventController {
         }
     }
 
+    @GetMapping("/{eventId}/imgprofil")
+    public ResponseEntity<Resource> getEvntImgById(@PathVariable Long eventId) {
+        try {
+            // Fetch the event by its ID
+            Event event = eventService.getEventById(eventId);
+            if (event == null) {
+                // If event not found, return 404 Not Found status
+                return ResponseEntity.notFound().build();
+            }
+
+            // Get the user associated with the event
+            OurUsers user = event.getUser();
+
+            // Assuming imagePath is the path to the image file
+            Path imagePath = Paths.get(user.getImage());
+            Resource resource = new UrlResource(imagePath.toUri());
+
+            // Return the image with proper content type
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(resource);
+        } catch (IOException e) {
+            // Handle IO exception
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+    @GetMapping("/{eventId}/img")
+    public ResponseEntity<Resource> getImgById(@PathVariable Long eventId) {
+        try {
+            // Fetch the event by its ID
+            Event event = eventService.getEventById(eventId);
+            if (event == null) {
+                // If event not found, return 404 Not Found status
+                return ResponseEntity.notFound().build();
+            }
+
+
+            // Assuming imagePath is the path to the image file
+            Path imagePath = Paths.get(event.getFilename());
+            Resource resource = new UrlResource(imagePath.toUri());
+
+            // Return the image with proper content type
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG)
+                    .body(resource);
+        } catch (IOException e) {
+            // Handle IO exception
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+    }
+
     @GetMapping("/{eventId}")
     public ResponseEntity<ReqRes> getEventById(@PathVariable Long eventId) {
         // Fetch the post by its ID
@@ -163,12 +221,6 @@ public class EventController {
             // If post not found, return 404 Not Found status
             return ResponseEntity.notFound().build();
         }
-
-        // Convert the post data to the desired format
-        //String imagePath = event.getFilename();
-        //Path file = Paths.get(imagePath);
-        //byte[] imageData = Files.readAllBytes(file);
-        //event.setImageData(imageData);
 
         OurUsers user = event.getUser();
 
@@ -187,7 +239,6 @@ public class EventController {
         eventWithUserData.setCreationdate(event.getCreationDate());
         eventWithUserData.setLocation(event.getLocation());
         eventWithUserData.setUserId(user.getId());
-        //eventWithUserData.setImageData(imageData);
 
         return new ResponseEntity<>(eventWithUserData, HttpStatus.OK);
     }

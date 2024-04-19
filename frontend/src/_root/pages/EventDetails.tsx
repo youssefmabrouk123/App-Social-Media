@@ -25,13 +25,14 @@ interface Event {
   imageProfilData: string;
 }
 
-const arrayBufferToBase64 = (buffer: any) => {
+const arrayBufferToBasee64 = (buffer: ArrayBuffer) => {
+  let binary = '';
   const bytes = new Uint8Array(buffer);
-  let binary = "";
-  for (let i = 0; i < bytes.byteLength; i++) {
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
     binary += String.fromCharCode(bytes[i]);
   }
-  return window.btoa(binary);
+  return btoa(binary);
 };
 
 const EventDetails = () => {
@@ -39,7 +40,9 @@ const EventDetails = () => {
   const { id } = useParams<{ id: string }>();
   const [isLoading, setIsLoading] = useState(true);
   const [event, setEvent] = useState<Event | undefined>();
-  const [imageURL, setImageURL] = useState<string>("");
+  const [imageURL, setImageURL] = useState("");
+  const [profileImage, setProfileImage] = useState("");
+
   const [participated, setParticipated] = useState<boolean>(false);
   const [participants, setParticipants] = useState<any[]>([]);
   const [totalParticipants, setTotalParticipants] = useState(0);
@@ -54,20 +57,28 @@ const EventDetails = () => {
         const eventResponse = await axios.get<Event>(
           `http://localhost:8080/users/events/${id}`
         );
-        const base64Image = arrayBufferToBase64(eventResponse.data.imageData);
-        const image = `data:image/jpeg;base64,${base64Image}`;
-
+       
+        
         setEvent(eventResponse.data);
-
         console.log("eventResponse.data :");
         console.log(eventResponse.data);
+        ///////////////
 
-        const imageResponse = await axios.get(`http://localhost:8080/users/events/img/12`, {
+        const imageProfilResponse = await axios.get(`http://localhost:8080/users/events/${eventResponse.data.eventId}/img`, {
           responseType: 'arraybuffer'
         });
-        const base64Imagee = arrayBufferToBase64(imageResponse.data);
-        const imagee = `data:image/jpeg;base64,${base64Imagee}`;
+        const base64Img = arrayBufferToBasee64(imageProfilResponse.data);
+        const imagee = `data:image/jpeg;base64,${base64Img}`;
         setImageURL(imagee);
+
+        //////////////
+        const imageResponse = await axios.get(`http://localhost:8080/users/events/${eventResponse.data.eventId}/imgprofil`, {
+          responseType: 'arraybuffer'
+        });
+        console.log("imageResponsedata" , imageResponse.data)
+        const base64Imagee = arrayBufferToBasee64(imageResponse.data);
+        const img = `data:image/jpeg;base64,${base64Imagee}`;
+        setProfileImage(img);
         //console.log(imagee);
 
         // Check if the user has participated in the event
@@ -198,13 +209,13 @@ const EventDetails = () => {
       <h3 className="h3-bold md:h2-bold text-left w-full">EVENT DETAILS</h3>
 
       <div className="post_details-card">
-        <img src={event?.imageData} alt="event" className="post_details-img" />
+        <img src={imageURL} alt="event" className="post_details-img" />
         <div className="post_details-info">
           <div className="flex-between w-full">
             <Link to="/profile" className="flex items-center gap-3">
               <img
                 src={
-                  event?.imageProfilData ||
+                  profileImage ||
                   "/assets/icons/profile-placeholder.svg"
                 }
                 className="w-8 h-8 lg:w-12 lg:h-12 rounded-full"
@@ -310,7 +321,7 @@ const EventDetails = () => {
 
           <hr className="border w-full border-dark-5/80" />
           <div className="flex flex-col w-full small-medium lg:base-regular">
-            <h1><b> {event?.eventName} </b> </h1>
+            <h1><b><i>Name : </i></b> {event?.eventName}  </h1>
           </div>
           <div className="flex flex-col w-full small-medium lg:base-regular">
             <p><b><i>Date : </i></b> {event?.eventDate}</p>

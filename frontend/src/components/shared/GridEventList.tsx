@@ -10,7 +10,7 @@ const GridEventList = ({ events }: any) => {
     <ul className="grid-container">
       {events.slice().reverse().map((event:any) => (
         <li key={event.id} className="relative min-w-80 h-80">
-          <Link to={{ pathname: `/events/${event.id}`, state: { event } }} className="grid-post_link">
+          <Link to={{ pathname: `/events/${event.id}`}} className="grid-post_link">
             <img
               src={event.imageData || "/assets/icons/wallpaper.svg"}
               alt="Failed to upload event's image"
