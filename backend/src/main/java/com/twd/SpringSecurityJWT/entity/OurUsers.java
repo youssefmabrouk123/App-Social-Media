@@ -43,6 +43,16 @@ public class OurUsers implements UserDetails {
 
     @JsonBackReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Event> event = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Participation> participation = new ArrayList<>();
+
+    ///////
+
+    @JsonBackReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
     @JsonIgnore

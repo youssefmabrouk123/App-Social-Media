@@ -33,6 +33,4 @@ public class Participation {
                 ", post=" + (event != null ? event.getId() : null) +
                 '}';
     }
-
-
 }
