@@ -28,7 +28,7 @@ const UserDetail = ({user}:any) => {
       </svg>
       <div className="ml-6">
         <h4 className="font-bold text-blue-500">Age</h4>
-        <p className="mt-2 max-w-screen-sm text-sm text-gray-500">{user.age !== undefined && user.age !== null ? user.age : "not defined"}</p>
+        <p className="mt-2 max-w-screen-sm text-sm text-gray-500">{user.age !== undefined && user.age !== 0 ? user.age : "not defined"}</p>
       </div>
     </div>
     

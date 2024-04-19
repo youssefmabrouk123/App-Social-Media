@@ -51,6 +51,7 @@ const Home = () => {
             imageProfilData: post.imageProfilData ? `data:image/jpeg;base64,${post.imageProfilData}` : undefined,
           }));
           setPosts(postsWithImageData);
+          
         } else {
           console.error('Invalid response format: Missing data or posts array');
         }
@@ -70,6 +71,8 @@ const Home = () => {
 
   return (
     <div className="profile-container">
+                <h2 className="h3-bold md:h2-bold text-left w-full">Feeds</h2>
+
       {/* Post list rendering code */}
       {posts && posts.length > 0 ? (
   <div  >

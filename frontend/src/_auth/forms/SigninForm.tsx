@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from '@/components/ui/button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -78,6 +78,15 @@ const SigninForm = () => {
 //     setIsUserLoading(false);
 //   }
 // }
+
+var aToken:any;
+var rToken:any;
+
+useEffect(() => {
+  setAccessToken(()=>aToken);
+setRefreshToken(()=>rToken);
+}, [aToken,rToken]);
+
 const handleSignin = async (users: z.infer<typeof SigninValidation>) => {
         const response = await axios.post("http://localhost:8080/auth/signin", users);
         console.log(response.data);
@@ -85,6 +94,9 @@ const handleSignin = async (users: z.infer<typeof SigninValidation>) => {
         // Store tokens securely (e.g., in localStorage)
         localStorage.setItem('accessToken', response.data.token);
         localStorage.setItem('refreshToken', response.data.refreshToken);
+
+        aToken=response.data.token;
+        rToken=response.data.refreshToken;
         setAccessToken(()=>response.data.token);
         setRefreshToken(()=>response.data.refreshToken);
         
@@ -92,7 +104,7 @@ const handleSignin = async (users: z.infer<typeof SigninValidation>) => {
 
         //console.log(accessToken)
         //ALERT PROBLEM
-        if (accessToken==="") {
+        if (response.data.token==="") {
           toast({ title: "Login failed. Please try again." });
           
           return;
@@ -101,9 +113,12 @@ const handleSignin = async (users: z.infer<typeof SigninValidation>) => {
 
         if (isLoggedIn) {
           form.reset();
-          // console.log("-----------");
-          // console.log(user);
-          // console.log("-----------");
+           console.log("-----------");
+           console.log(user);
+           console.log(accessToken);
+
+
+           console.log("-----------");
 
           navigate("/");
         } else {

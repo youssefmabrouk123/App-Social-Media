@@ -10,6 +10,7 @@ import com.twd.SpringSecurityJWT.entity.SavedPost;
 import lombok.Data;
 import org.apache.tomcat.util.file.ConfigurationSource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,6 +44,7 @@ public class ReqRes {
     private OurUsers ourUsers;
     private String caption;
     private String filename;
+    private MultipartFile fileMLTP ;
     private String location;
     private String tags;
     private List<Post> posts; // Add a field for posts
@@ -54,4 +56,12 @@ public class ReqRes {
     private Boolean liked ;
     private Boolean saved ;
     private Resource imge ;
+    ///
+    private List<ReqRes> event;
+    private Long eventId ;
+    private String userid;
+    private String eventName;
+    private String eventDescription;
+    private String organizer ;
+    private String eventDate;
 }

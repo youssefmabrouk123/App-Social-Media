@@ -46,6 +46,7 @@ const PostDetails = () => {
   const [post, setPost] = useState<Post>();
   const [userPost, setUserPost] = useState<UserPost>();
   const [imageURL, setImageURL] = useState<string>('');
+
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -189,7 +190,7 @@ const PostDetails = () => {
             <div className="flex-center gap-4 ">
               <Button
                 onClick={() => handleDelete(post?.postId)} variant="ghost"
-                className={`ost_details-delete_btn ${parseInt(user.id, 10) === post?.userId || "hidden"}`}>
+                className={` ${parseInt(user.id, 10) === post?.userId || "hidden"}`}>
                 <img
                   src={"/assets/icons/delete.svg"}
                   alt="delete"
@@ -217,7 +218,11 @@ const PostDetails = () => {
               {userPost?.caption}
             </p>
             <ul className="flex gap-1 mt-2">
-              <li>{userPost?.tags}</li>
+              {userPost?.tags.split(',').map((tag, index) => (
+    <li key={`${tag.trim()}${index}`} className="text-light-3 small-regular">
+      #{tag.trim()}
+    </li>
+  ))}
             </ul>
           </div>
 

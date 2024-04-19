@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +38,6 @@ public class Post {
     public byte[] getImageData() {
         return imageData;
     }
-
     public void setImageData(byte[] imageData) {
         this.imageData = imageData;
     }
@@ -48,7 +46,6 @@ public class Post {
     @JsonBackReference
     @JoinColumn(name = "user_id",nullable = false)
     private OurUsers user;
-
 
     @OneToMany(mappedBy = "post")
     private List<SavedPost> savedByUsers = new ArrayList<>();
@@ -73,20 +70,8 @@ public class Post {
         this.user = user;
     }
 
-    public List<SavedPost> getSavedByUsers() {
-        return savedByUsers;
-    }
-
-    public void setSavedByUsers(List<SavedPost> savedByUsers) {
-        this.savedByUsers = savedByUsers;
-    }
-
     public List<Interaction> getLikedByUsers() {
         return likedByUsers;
-    }
-
-    public void setLikedByUsers(List<Interaction> likedByUsers) {
-        this.likedByUsers = likedByUsers;
     }
 
 
@@ -101,8 +86,6 @@ public class Post {
                 .add("creationdate=" + creationdate)
                 .toString();
     }
-
-    // Stores the filename of the uploaded file
 
     public Long getId() {
         return id;

@@ -18,7 +18,7 @@ const GridPostList = ({ posts }: any) => {
           <Link to={`/posts/${post.id}`} className="grid-post_link">
             <img
               src={post.imageUrl}
-              alt="post"
+              alt="Failed to upload post's image"
               className="h-full w-full object-cover"
             />
           </Link>
