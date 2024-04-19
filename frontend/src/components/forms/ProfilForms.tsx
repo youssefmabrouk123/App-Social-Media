@@ -24,11 +24,11 @@ import { useState } from "react";
 const ProfileForms = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user , profileImage } = useUserContext();
+  const { user, profileImage } = useUserContext();
   const form = useForm<z.infer<typeof ProfilValidation>>({
     resolver: zodResolver(ProfilValidation),
     defaultValues: {
-      firstname:user.firstname,
+      firstname: user.firstname,
       lastname: user.lastname,
       age: user.age.toString(),
       bio: user.bio,
@@ -36,12 +36,11 @@ const ProfileForms = () => {
       file: [],
     },
   });
-  
+
   // Handler
   const handleSubmit = async (value: z.infer<typeof ProfilValidation>) => {
 
     try {
-      // Create FormData object to send multipart form data
 
       const formData = new FormData();
       formData.append("firstname", value.firstname);
@@ -86,45 +85,6 @@ const ProfileForms = () => {
     }
   };
 
-  //////////////////////////////////////////////////////////////////////////////////
-  // // ACTION = UPDATE
-  // if (post && action === "Update") {
-  //   const updatedPost = await updatePost({
-  //     ...value,
-  //     postId: post.$id,
-  //     imageId: post.imageId,
-  //     imageUrl: post.imageUrl,
-  //   });
-
-  //   if (!updatedPost) {
-  //     toast({
-  //       title: `${action} post failed. Please try again.`,
-  //     });
-  //   }
-  //   return navigate(`/posts/${post.$id}`);
-  // }
-
-  // // ACTION = CREATE
-  // const newPost = await createPost({
-  //   ...value,
-  //   userId: user.id,
-  // });
-
-  // if (!newPost) {
-  //   toast({
-  //     title: `${action} post failed. Please try again.`,
-  //   });
-  // }
-  // navigate("/");
-
-  // try {
-  //     const response = await axios.post("http://localhost:8080/auth/create", value);
-  //     console.log(response);
-
-  //     console.log(response.data);
-  //     } catch (error:any) {
-  //     console.error(error.response.data);
-  //////////////////////////////////////////////////////////////////////////////
 
   return (
     <Form {...form}>
@@ -137,7 +97,7 @@ const ProfileForms = () => {
           name="bio"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">bio</FormLabel>
+              <FormLabel className="shad-form_label">Bio</FormLabel>
               <FormControl>
                 <Textarea
                   className="shad-textarea custom-scrollbar"
@@ -155,7 +115,7 @@ const ProfileForms = () => {
           name="file"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">Add Photos</FormLabel>
+              <FormLabel className="shad-form_label">Profil image</FormLabel>
               <FormControl>
                 <FileUploader
                   fieldChange={field.onChange}
@@ -171,14 +131,14 @@ const ProfileForms = () => {
           name="firstname"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">firstname</FormLabel>
+              <FormLabel className="shad-form_label">Firstname</FormLabel>
               <FormControl>
                 <Input
                   type="text"
                   defaultValue={user.firstname}
                   className="shad-input"
                   {...field}
-                  //defaultValue={user.firstname}
+                //defaultValue={user.firstname}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -191,7 +151,7 @@ const ProfileForms = () => {
           name="lastname"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">lastname</FormLabel>
+              <FormLabel className="shad-form_label">Lastname</FormLabel>
               <FormControl>
                 <Input
                   type="text"
@@ -210,13 +170,13 @@ const ProfileForms = () => {
           name="age"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">age</FormLabel>
+              <FormLabel className="shad-form_label">Age</FormLabel>
               <FormControl>
                 <Input
                   type="number"
                   className="shad-input"
-                  min={20}
-                  max={35}
+                  min={18}
+                  max={30}
                   defaultValue={user.age.toString()}
                   {...field}
                 />
@@ -231,19 +191,23 @@ const ProfileForms = () => {
           name="filiere"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">filiere</FormLabel>
+              <FormLabel className="shad-form_label"></FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  className="shad-input"
-                  defaultValue={user.filiere}
-                  {...field}
-                />
+                <select className="shad-input" {...field}>
+                  <option value="Undefined">Select Filiere</option>
+                  <option value="Informatique">Génie Informatique</option>
+                  <option value="Eléctrique">Génie Eléctrique</option>
+                  <option value="Mathématique">Génie Mathématique</option>
+                  <option value="Industriel">Génie Industriel</option>
+                  <option value="Eléctrique">Génie Eléctrique</option>
+                  <option value="Mécanique">Génie Mécanique</option>
+                </select>
               </FormControl>
               <FormMessage className="shad-form_message" />
             </FormItem>
           )}
         />
+
         <div className="flex gap-4 items-center justify-end">
           <Button
             type="button"
