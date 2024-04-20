@@ -25,7 +25,7 @@ const Explore = () => {
       setIsLoading(true);
       try {
         const response = await axios.get<any[]>('http://localhost:8080/users/events/allevents');
-        console.log("/////");
+        console.log("++++++++");
         console.log(response.data);
         const eventsWithImages = response.data.event.map((event: any) => ({
           id: event.eventId,

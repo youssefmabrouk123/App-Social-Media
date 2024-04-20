@@ -335,7 +335,7 @@ const EventDetails = () => {
 
           <hr className="border w-full border-dark-5/70" />
 
-          <div style={{ marginLeft: "25%", marginBottom: "3%", display: 'grid', placeItems: 'center' }}>
+          <div style={{ marginLeft: "auto", marginRight: "auto", marginBottom: "3%", display: 'grid', placeItems: 'center' }}>
             <Button
               style={{
                 backgroundColor: participated ? "gray" : "blue",
@@ -344,7 +344,7 @@ const EventDetails = () => {
               className={`${user.role === "CLUB" ? "shad-button_primary whitespace-nowrap" : "hidden"}`}
               type="submit"
               onClick={() => handleParticipation(event?.eventId)} >
-              {participated ? "Participated" : "Participate"} {event?.eventName}
+              {participated ? "Participated" : "Participate"} in {event?.eventName.toUpperCase()}
             </Button>
           </div>
 
