@@ -63,7 +63,7 @@ const EventForm = ({ event }: EventFormProps) => {
                 toast({
                     title: "Event created successfully ✔",
                 });
-                navigate("/");
+                navigate("/events");
             } else {
                 toast({
                     title: "Please try again",

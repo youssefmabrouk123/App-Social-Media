@@ -13,20 +13,6 @@ import FileUploader from "../shared/FileUploader";
 import axios from "axios";
 import { useState } from "react";
 
-function calculateAge(birthDateString: string): number {
-  const birthDate = new Date(birthDateString);
-  const currentDate = new Date();
-  let age = currentDate.getFullYear() - birthDate.getFullYear();
-  if (
-      birthDate.getMonth() > currentDate.getMonth() ||
-      (birthDate.getMonth() === currentDate.getMonth() &&
-          birthDate.getDate() > currentDate.getDate())
-  ) {
-      age--;
-  }
-
-  return age;
-}
 
 const ProfileForms = () => {
   const navigate = useNavigate();
@@ -37,7 +23,7 @@ const ProfileForms = () => {
     defaultValues: {
       firstname: user.firstname,
       lastname: user.lastname,
-      age: calculateAge(user.birthDate).toString(),
+      //age: calculateAge(user.birthDate).toString(),
       birthDate : user.birthDate ,
       bio: user.bio,
       filiere: user.filiere,
@@ -53,11 +39,12 @@ const ProfileForms = () => {
       const formData = new FormData();
       formData.append("firstname", value.firstname);
       formData.append("lastname", value.lastname);
-      formData.append("age", value.age);
+      //formData.append("age", value.age);
       formData.append("birthDate", value.birthDate);
       formData.append("bio", value.bio);
       formData.append("filiere", value.filiere);
       formData.append("file", value.file[0]);
+
 
       // Axios POST request to the API endpoint
       const token = localStorage.getItem("accessToken");
@@ -71,8 +58,9 @@ const ProfileForms = () => {
         }
       );
 
+      console.log(formData);
       console.log(response);
-      if (response.data == !"Post created successfully") {
+      if (response.data == !"User Updated successfully") {
         toast({
           title: "Please try again",
         });

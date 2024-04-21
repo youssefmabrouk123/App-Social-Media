@@ -17,7 +17,7 @@ interface Event {
   eventName: string;
   eventDescription: string;
   eventDate: string;
-  creationDate: string;
+  creationdate: string;
   location: string;
   organizer: string;
   image: string;
@@ -226,7 +226,7 @@ const EventDetails = () => {
                 </p>
                 <div className="flex-center gap-2 text-light-3">
                   <p className="subtle-semibold lg:small-regular ">
-                    {multiFormatDateString(event?.creationDate)}
+                    {multiFormatDateString(event?.creationdate)}
                   </p>
                 </div>
               </div>

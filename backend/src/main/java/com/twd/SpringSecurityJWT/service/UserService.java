@@ -19,6 +19,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.core.io.Resource;
@@ -155,5 +157,22 @@ public class UserService {
             // User not found, return null or empty string
             return null; // or return new ByteArrayResource(new byte[0]);
         }
+    }
+
+    public static int calculateAge(String birthDateString) {
+        // Parse the birth date string into a LocalDate object
+        LocalDate birthDate = LocalDate.parse(birthDateString);
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Calculate the period between the birth date and current date
+        Period period = Period.between(birthDate, currentDate);
+
+        // Get the years part of the period
+        int age = period.getYears();
+
+        // Return the calculated age
+        return age;
     }
 }

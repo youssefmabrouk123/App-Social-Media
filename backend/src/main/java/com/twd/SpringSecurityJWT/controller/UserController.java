@@ -85,8 +85,8 @@ public class UserController {
     public String updateUser(
             @RequestParam("firstname") String firstname,
             @RequestParam("lastname") String lastname,
-            @RequestParam("age") String age,
-            @RequestParam("birthdate") String birthDate,
+            //@RequestParam("age") String age,
+            @RequestParam("birthDate") String birthDate,
             @RequestParam("bio") String bio,
             @RequestParam("filiere") String filiere,
             @RequestParam(value = "file", required = false) MultipartFile file) {
@@ -95,7 +95,7 @@ public class UserController {
         OurUsers user = userService.getUserByMail(username).orElse(null);
 
         if (user == null) {
-            return " error didn't exist";
+            return " error: user didn't exist";
         } else {
             try {
                 if (file != null && !file.isEmpty()) {
@@ -110,16 +110,16 @@ public class UserController {
 
                 user.setFirstname(firstname);
                 user.setLastname(lastname);
-                user.setAge(Integer.parseInt(age));
+                user.setAge(UserService.calculateAge(birthDate));
                 user.setBirthDate(birthDate);
                 user.setBio(bio);
                 user.setFiliere(filiere);
 
                 userService.userUpdate(user);
 
-                return "Post created successfully";
+                return "User Updated successfully";
             } catch (IOException e) {
-                return "Error creating post: " + e.getMessage();
+                return "Error updating user: " + e.getMessage();
             }
         }
 

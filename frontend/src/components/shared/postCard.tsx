@@ -53,12 +53,12 @@ const PostCard: React.FC<PostCardProps> = ({
         const { data } = response;
         setUserPost(data);
         const imageResponse = await axios.get(`http://localhost:8080/users/posts/image/${postId}`, {
-              responseType: 'arraybuffer'
-            });
-            const base64Image = arrayBufferToBase64(imageResponse.data);
-            const imageUrl = `data:image/jpeg;base64,${base64Image}`;
-            setImageURL(imageUrl);
-    
+          responseType: 'arraybuffer'
+        });
+        const base64Image = arrayBufferToBase64(imageResponse.data);
+        const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+        setImageURL(imageUrl);
+
       } catch (error) {
         console.error('Failed to fetch post details:', error);
       }
@@ -103,15 +103,15 @@ const PostCard: React.FC<PostCardProps> = ({
         <div className="small-medium lg:base-medium py-5">
           <p>{userPost.caption}</p>
           <ul className="flex gap-1 mt-2">
-              {userPost?.tags.split(',').map((tag, index) => (
-    <li key={`${tag.trim()}${index}`} className="text-light-3 small-regular">
-      #{tag.trim()}
-    </li>
-  ))}
-            </ul>
+            {userPost?.tags.split(',').map((tag, index) => (
+              <li key={`${tag.trim()}${index}`} className="text-light-3 small-regular">
+                #{tag.trim()}
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <img
+        <img 
           src={imageURL}
           alt="post image"
           className="post-card_img"
