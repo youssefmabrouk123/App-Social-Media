@@ -321,16 +321,16 @@ const EventDetails = () => {
 
           <hr className="border w-full border-dark-5/80" />
           <div className="flex flex-col w-full small-medium lg:base-regular">
-            <h1><b><i>Name : </i></b> {event?.eventName}  </h1>
+            <h1><b><i>Name : </i></b> {event?.eventName || "undefined" }  </h1>
           </div>
           <div className="flex flex-col w-full small-medium lg:base-regular">
-            <p><b><i>Date : </i></b> {event?.eventDate}</p>
+            <p><b><i>Date : </i></b> {event?.eventDate || "undefined" } </p>
           </div>
           <div className="flex flex-col w-full small-medium lg:base-regular">
-            <p><b><i>Location : </i></b> {event?.location}</p>
+            <p><b><i>Location : </i></b> {event?.location || "undefined" }</p>
           </div>
           <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
-            <p><b><i>Description : </i></b>{event?.eventDescription}</p>
+            <p><b><i>Description : </i></b>{event?.eventDescription || "undefined" }</p>
           </div>
 
           <hr className="border w-full border-dark-5/70" />
@@ -344,7 +344,7 @@ const EventDetails = () => {
               className={`${user.role === "CLUB" ? "shad-button_primary whitespace-nowrap" : "hidden"}`}
               type="submit"
               onClick={() => handleParticipation(event?.eventId)} >
-              {participated ? "Participated" : "Participate"} in {event?.eventName.toUpperCase()}
+              {participated ? "Participated" : "Participate"} 
             </Button>
           </div>
 

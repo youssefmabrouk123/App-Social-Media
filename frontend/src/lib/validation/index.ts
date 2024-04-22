@@ -35,7 +35,7 @@ export const ProfileValidation = z.object({
 export const PostValidation = z.object({
   caption: z.string().max(500, { message: "Maximum 500 caracters" }),
   file: z.custom<File[]>(),
-  location: z.string().max(100, { message: "Maximum 100 characters." }),
+  location: z.string().max(30, { message: "Maximum 30 characters." }),
   tags: z.string(),
 });
 ////
@@ -53,11 +53,11 @@ export const ProfilValidation = z.object({
 });
 //////////////
 export const EventValidation = z.object({
-  eventName: z.string().max(30, { message: "Maximum 30 characters" }),
+  eventName: z.string().min(10).max(30, { message: "Min 10 and Maxi 30 characters" }),
   eventDescription: z.string().max(500, { message: "Maximum 500 characters" }),
   location: z.string().max(30, { message: "Maximum 30 characters" }),
   organizer: z.string().max(30, { message: "Maximum 30 characters" }),
-  eventDate:  z.string().max(20, { message: "Enter a valide date !" }),
+  eventDate:  z.string().min(8).max(20, { message: "Enter a valide date : YYYY-MM-DD HH:MIN " }),
   file: z.custom<File[]>(),
 });
 ///////////////

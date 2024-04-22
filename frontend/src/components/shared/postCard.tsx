@@ -45,24 +45,31 @@ const PostCard: React.FC<PostCardProps> = ({
 }) => {
   const [userPost, setUserPost] = useState<Post | null>(null);
   const [imageURL, setImageURL] = useState<string>('');
-
   useEffect(() => {
     const fetchPostDetail = async () => {
       try {
-        const response = await axios.get<Post>(`http://localhost:8080/users/posts/all/${postId}`);
-        const { data } = response;
-        setUserPost(data);
-        const imageResponse = await axios.get(`http://localhost:8080/users/posts/image/${postId}`, {
-          responseType: 'arraybuffer'
-        });
+        const [postResponse, imageResponse] = await Promise.all([
+          axios.get<Post>(`http://localhost:8080/users/posts/all/${postId}`),
+          axios.get(`http://localhost:8080/users/posts/image/${postId}`, {
+            responseType: 'arraybuffer'
+          }),
+        ]);
+    
+        const { data: postData } = postResponse;
+        setUserPost(postData);
+    
         const base64Image = arrayBufferToBase64(imageResponse.data);
         const imageUrl = `data:image/jpeg;base64,${base64Image}`;
         setImageURL(imageUrl);
+    
+      
+        
 
       } catch (error) {
         console.error('Failed to fetch post details:', error);
       }
     };
+    
 
     fetchPostDetail();
   }, [postId]);
@@ -117,7 +124,7 @@ const PostCard: React.FC<PostCardProps> = ({
           className="post-card_img"
         />
       </Link>
-      <PostStats liked={liked} saved={saved} interactions={userPost.interactions} idPost={postId} />
+      <PostStats liked={liked} saved={saved} postInteraction={[]} interactions={userPost.interactions} idPost={postId} />
     </div>
   );
 };

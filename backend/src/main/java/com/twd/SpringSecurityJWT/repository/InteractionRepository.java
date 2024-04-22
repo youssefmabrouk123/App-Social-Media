@@ -20,4 +20,8 @@ public interface InteractionRepository extends JpaRepository<Interaction, Long> 
 
     @Transactional
     void deleteByPostId(Long postId);
+
+
+    List<Interaction> findByPostId(Long postId);
+
 }

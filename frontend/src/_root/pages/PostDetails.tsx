@@ -46,7 +46,6 @@ const PostDetails = () => {
   const [post, setPost] = useState<Post>();
   const [userPost, setUserPost] = useState<UserPost>();
   const [imageURL, setImageURL] = useState<string>('');
-
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -102,15 +101,17 @@ const PostDetails = () => {
 
     const fetchPostDetail = async (id: any) => {
       try {
-        const response = await axios.get<UserPost>(`http://localhost:8080/users/posts/all/${id}`);
-        const { data } = response;
-        setUserPost(data);
-        const imageResponse = await axios.get(`http://localhost:8080/users/posts/image/${id}`, {
-          responseType: 'arraybuffer'
-        });
+        const [userPostResponse, imageResponse] = await Promise.all([
+          axios.get<UserPost>(`http://localhost:8080/users/posts/all/${id}`),
+          axios.get(`http://localhost:8080/users/posts/image/${id}`, { responseType: 'arraybuffer' }),
+        ]);
+        const { data: userPostData } = userPostResponse;
+        setUserPost(userPostData);
+
         const base64Image = arrayBufferToBase64(imageResponse.data);
         const imageUrl = `data:image/jpeg;base64,${base64Image}`;
         setImageURL(imageUrl);
+
 
       } catch (error) {
         console.error('Failed to fetch post details:', error);
@@ -122,7 +123,7 @@ const PostDetails = () => {
 
   }, [id]);
 
-  const handleDelete = async (postId:any) => {
+  const handleDelete = async (postId: any) => {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await axios.delete(`http://localhost:8080/users/posts/${postId}`, {
@@ -131,18 +132,18 @@ const PostDetails = () => {
         },
       });
       toast({
-        title :'Post deleted ✔ '
+        title: 'Post deleted ✔ '
       });
       navigate('/');
       console.log('Post deleted successfully:', response.data);
     } catch (error) {
       toast({
-        title :'Failed to delete post'
+        title: 'Failed to delete post'
       });
       console.error('Failed to delete post:', error);
     }
   };
-  
+
   // console.log('----------------------')
   //           console.log(post?.liked)
   //           console.log(post?.saved)
@@ -167,7 +168,7 @@ const PostDetails = () => {
 
         <div className="post_details-info">
           <div className="flex-between w-full">
-            <Link to="/profile" className="flex items-center gap-3">
+            <Link to={`/profile/${post?.userId}`} className="flex items-center gap-3">
               <img
                 src={
                   post?.imageProfilData ||
@@ -219,22 +220,22 @@ const PostDetails = () => {
             </p>
             <ul className="flex gap-1 mt-2">
               {userPost?.tags.split(',').map((tag, index) => (
-    <li key={`${tag.trim()}${index}`} className="text-light-3 small-regular">
-      #{tag.trim()}
-    </li>
-  ))}
+                <li key={`${tag.trim()}${index}`} className="text-light-3 small-regular">
+                  #{tag.trim()}
+                </li>
+              ))}
             </ul>
           </div>
 
           <div className="w-full">
-
-
             <PostStats
-              idPost={post?.postId}
-              liked={post?.liked}
-              saved={post?.saved}
-              interactions={userPost?.interactions}
+              idPost={post?.postId || 0}
+              liked={post?.liked || false}
+              saved={post?.saved || false}
+              interactions={userPost?.interactions || 0}
+              postInteraction={[]}
             />
+
           </div>
         </div>
       </div>

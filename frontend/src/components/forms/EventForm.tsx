@@ -15,7 +15,7 @@ import FileUploader from "../shared/FileUploader";
 import axios from "axios";
 
 type EventFormProps = {
-    event?: Models.Document;
+    event?: any ;
 };
 
 const EventForm = ({ event }: EventFormProps) => {
@@ -43,10 +43,11 @@ const EventForm = ({ event }: EventFormProps) => {
             formData.append("location", value.location);
             formData.append("organizer", value.organizer);
             formData.append("eventDate", value.eventDate);
-            formData.append("file", value.file[0]);
+            formData.append("file", value.file[0] );
 
+            console.log("value.file[0]");
             console.log(value.file[0]);
-
+            
             const token = localStorage.getItem("accessToken");
             const response = await axios.post(
                 "http://localhost:8080/users/events/create",

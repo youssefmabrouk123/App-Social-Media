@@ -132,10 +132,9 @@ const ProfileForms = () => {
               <FormControl>
                 <Input
                   type="text"
+                  {...field}
                   defaultValue={user.firstname}
                   className="shad-input"
-                  {...field}
-                //defaultValue={user.firstname}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -152,9 +151,9 @@ const ProfileForms = () => {
               <FormControl>
                 <Input
                   type="text"
+                  {...field}
                   className="shad-input"
                   defaultValue={user.lastname}
-                  {...field}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -172,8 +171,8 @@ const ProfileForms = () => {
                 <Input
                   type="text"
                   className="shad-input"
-                  defaultValue={user.birthDate}
                   {...field}
+                  defaultValue={user.birthDate}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
