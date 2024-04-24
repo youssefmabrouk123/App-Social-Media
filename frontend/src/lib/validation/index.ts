@@ -45,7 +45,7 @@ export const ProfilValidation = z.object({
   
   firstname: z.string().min(3,{ message: "This field is required" }).max(50),
   lastname: z.string().min(3,{ message: "This field is required" }).max(50),
-  birthDate: z.string().min(10,{ message: "YYYY-MM-DD" }).max(10),
+  birthDate: z.string().min(9,{ message: "Please let date be like : YYYY-MM-DD" }).max(11),
   //age: z.string().min(2,{ message: "Your age must be above 18 !" }).max(30),
   bio: z.string().max(500),
   filiere: z.string(),

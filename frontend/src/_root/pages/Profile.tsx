@@ -53,7 +53,7 @@ const Profile = () => {
           axios.get(`http://localhost:8080/users/${id}/posts`),
         ]);
 
-        
+
         if (userDataResponse.data && userPostsResponse.data) {
           const userData: CUser = {
             id: userDataResponse.data.id,
@@ -139,7 +139,7 @@ const Profile = () => {
                 {currentUser.firstname + " " + currentUser.lastname}
               </h1>
               <p className="small-regular md:body-medium text-light-3 text-center xl:text-left">
-                @{currentUser.firstname + "_" + currentUser.lastname }
+                @{currentUser.firstname + "_" + currentUser.lastname}
               </p>
             </div>
 
@@ -203,9 +203,9 @@ const Profile = () => {
         </Button>
       </div>
 
-      
 
-{flipper ? <GridPostList posts={posts} /> : <UserDetail user={currentUser}/>}
+
+      {flipper ? <GridPostList posts={posts} /> : <UserDetail user={currentUser} />}
     </div>
   );
 };

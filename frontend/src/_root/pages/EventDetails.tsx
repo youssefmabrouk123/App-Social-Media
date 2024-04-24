@@ -90,7 +90,14 @@ const EventDetails = () => {
             },
           }
         );
+
         setParticipated(participationResponse.data === "Participated");
+
+        // console.log("participation:")
+        // console.log(participated)
+        // console.log("eventResponse.data.eventId:")
+        // console.log(eventResponse.data.eventId)
+
 
         setIsLoading(false);
 
@@ -126,6 +133,8 @@ const EventDetails = () => {
           }
         );
         setParticipated(true);
+        console.log("participation:")
+        console.log(participated)
         toast({
           title: "Participation added ✔ ",
         });
@@ -140,6 +149,8 @@ const EventDetails = () => {
           }
         );
         setParticipated(false);
+        console.log("participation:")
+        console.log(participated)
         toast({
           title: "Participation deleted ✔ ",
         });
@@ -246,7 +257,7 @@ const EventDetails = () => {
               </Button> */}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button onClick={fetchParticipants}>
+                  <Button onClick={fetchParticipants} className={`${user.role === "CLUB" ? "" : "hidden"}`} >
                     <img
                       src={"/assets/icons/group.svg"}
                       alt="Participants"
@@ -321,16 +332,16 @@ const EventDetails = () => {
 
           <hr className="border w-full border-dark-5/80" />
           <div className="flex flex-col w-full small-medium lg:base-regular">
-            <h1><b><i>Name : </i></b> {event?.eventName || "undefined" }  </h1>
+            <h1><b><i>•Name : </i></b> {event?.eventName || "undefined" }  </h1>
           </div>
           <div className="flex flex-col w-full small-medium lg:base-regular">
-            <p><b><i>Date : </i></b> {event?.eventDate || "undefined" } </p>
+            <p><b><i>•Date : </i></b> {event?.eventDate || "undefined" } </p>
           </div>
           <div className="flex flex-col w-full small-medium lg:base-regular">
-            <p><b><i>Location : </i></b> {event?.location || "undefined" }</p>
+            <p><b><i>•Location : </i></b> {event?.location || "undefined" }</p>
           </div>
           <div className="flex flex-col flex-1 w-full small-medium lg:base-regular">
-            <p><b><i>Description : </i></b>{event?.eventDescription || "undefined" }</p>
+            <p><b><i>•Description : </i></b>{event?.eventDescription || "undefined" }</p>
           </div>
 
           <hr className="border w-full border-dark-5/70" />
@@ -341,10 +352,10 @@ const EventDetails = () => {
                 backgroundColor: participated ? "gray" : "blue",
                 color: "white",
               }}
-              className={`${user.role === "CLUB" ? "shad-button_primary whitespace-nowrap" : "hidden"}`}
+              className={`${user.role !== "CLUB" ? "shad-button_primary whitespace-nowrap" : "hidden"}`}
               type="submit"
               onClick={() => handleParticipation(event?.eventId)} >
-              {participated ? "Participated" : "Participate"} 
+              {participated ? "Participated" : "Participate"}
             </Button>
           </div>
 
