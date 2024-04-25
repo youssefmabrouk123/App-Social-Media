@@ -57,7 +57,7 @@ export const EventValidation = z.object({
   eventDescription: z.string().max(500, { message: "Maximum 500 characters" }),
   location: z.string().max(30, { message: "Maximum 30 characters" }),
   organizer: z.string().max(30, { message: "Maximum 30 characters" }),
-  eventDate:  z.string().min(8).max(20, { message: "Enter a valide date : YYYY-MM-DD HH:MIN " }),
+  eventDate:  z.string().min(8).max(18, { message: "Enter a valide date : YYYY-MM-DD HH:MIN " }),
   file: z.custom<File[]>(),
 });
 ///////////////
