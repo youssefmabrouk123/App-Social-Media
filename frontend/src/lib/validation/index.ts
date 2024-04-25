@@ -60,3 +60,9 @@ export const ProfilValidation = z.object({
   filiere: z.string().min(2).max(100),
   file: z.custom<File[]>(),
 });
+
+
+export const VoteValidation = z.object({
+  question: z.string().min(3,{ message: "This field is required" }).max(50),
+  description: z.string().min(2).max(500),
+});

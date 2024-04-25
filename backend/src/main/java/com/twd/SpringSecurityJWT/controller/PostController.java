@@ -44,7 +44,6 @@
 
         @Autowired
         private PostService postService;
-
         @Autowired
         private UserService userService;
         @Autowired

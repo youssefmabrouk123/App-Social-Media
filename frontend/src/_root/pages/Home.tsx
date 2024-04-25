@@ -4,6 +4,8 @@ import Loader from '@/components/shared/Loader';
 import { useParams } from 'react-router-dom';
 import { CUser } from '@/types';
 import PostCard from '@/components/shared/postCard';
+import Drawers from '@/components/shared/Drawers';
+import RightSidebar from '@/components/shared/RightSidebar';
 
 interface Post {
   postId: number;
@@ -71,6 +73,7 @@ const Home = () => {
   return (
     <div className="profile-container">
                 <h2 className="h3-bold md:h2-bold text-left w-full">Feeds</h2>
+               
 
       {/* Post list rendering code */}
       {posts && posts.length > 0 ? (
@@ -86,6 +89,7 @@ const Home = () => {
         saved={post.saved}
         postImage={post.imageProfilData || ''}
       />
+     
     ))}
   </div>
 ) : (
