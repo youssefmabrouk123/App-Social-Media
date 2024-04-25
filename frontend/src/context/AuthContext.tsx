@@ -13,43 +13,45 @@ export const INITIAL_USER = {
   birthDate:"",
   age: "",
   bio: "",
-  filiere:"",
+  filiere: "",
   imageUrl: "",
-  post:[],
-  savedPosts:[],
-  likedInteractions:[]
+  post: [],
+  savedPosts: [],
+  likedInteractions: [],
 };
-
 
 const INITIAL_STATE = {
   user: INITIAL_USER,
   isLoading: false,
+  setIsLoading: async () => false as boolean,
   isAuthenticated: false,
   setUser: () => {},
   setIsAuthenticated: () => {},
   checkAuthUser: async () => false as boolean,
-  accessToken:"",
-  setAccessToken:()=>"",
-  refreshToken:"",
-  setRefreshToken:()=>"",
-  profileImage: null
-
+  accessToken: "",
+  setAccessToken: () => "",
+  refreshToken: "",
+  setRefreshToken: () => "",
+  profileImage: null,
+  fetch: false,
+  setFetch: async () => false as boolean,
 };
 
 type IContextType = {
   user: IUser;
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setUser: React.Dispatch<React.SetStateAction<IUser>>;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
   checkAuthUser: () => Promise<boolean>;
-  accessToken:string;
-  setAccessToken:React.Dispatch<React.SetStateAction<string>>;
-  refreshToken:string;
-  setRefreshToken:React.Dispatch<React.SetStateAction<string>>;
+  accessToken: string;
+  setAccessToken: React.Dispatch<React.SetStateAction<string>>;
+  refreshToken: string;
+  setRefreshToken: React.Dispatch<React.SetStateAction<string>>;
   profileImage: string;
-
-
+  fetch: boolean;
+  setFetch: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE);
@@ -59,59 +61,61 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<IUser>(INITIAL_USER);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [accessToken,setAccessToken] = useState("");
-  const [refreshToken,setRefreshToken] = useState("");
+  const [accessToken, setAccessToken] = useState("");
+  const [refreshToken, setRefreshToken] = useState("");
   const [profileImage, setProfileImage] = useState(null);
+  const [fetch, setFetch] = useState(false);
 
-  const  checkAuthUser =  async() => {
+  // const [refresh, setRefresh] = useState(false);
+
+  const checkAuthUser = async () => {
     setIsLoading(true);
-    try{
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:8080/users/user', {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get("http://localhost:8080/users/user", {
         headers: {
-          Authorization: `Bearer ${token}` // Include the Authorization header with the JWT token
-        }
+          Authorization: `Bearer ${token}`, // Include the Authorization header with the JWT token
+        },
       });
-      console.log('*************');
+      console.log("*************");
       console.log(response.data);
-      console.log('*************');
-
+      console.log("*************");
 
       if (response) {
-              // setUser({
-              //   id: response.data.id,
-              //   firstname: response.data.firstname,
-              //   lastname: response.data.lastname,
-              //   email: response.data.email,
-              //   imageUrl: response.data.imageUrl,
-              //   bio: response.data.bio,
-              // });
-              const userData = {
-                id: response.data.id,
-                firstname: response.data.firstname,
-                lastname: response.data.lastname,
-                email: response.data.email,
-                role:response.data.role,
-                age: response.data.age,
-                bio: response.data.bio,
-                filiere:response.data.filiere,
-                imageUrl: response.data.imageUrl,
-                post:response.data.post,
-                savedPosts:response.data.savedPosts,
-                likedInteractions:response.data.likedInteractions
-                            };
-              setUser(userData);
-              setIsAuthenticated(true);
-      
-              return true;
-             }
-             return false;
-               } catch (error) {
-                 console.error(error);
-                 return false;
-               } finally {
-                 setIsLoading(false);
-               }
+        // setUser({
+        //   id: response.data.id,
+        //   firstname: response.data.firstname,
+        //   lastname: response.data.lastname,
+        //   email: response.data.email,
+        //   imageUrl: response.data.imageUrl,
+        //   bio: response.data.bio,
+        // });
+        const userData = {
+          id: response.data.id,
+          firstname: response.data.firstname,
+          lastname: response.data.lastname,
+          email: response.data.email,
+          role: response.data.role,
+          age: response.data.age,
+          bio: response.data.bio,
+          filiere: response.data.filiere,
+          imageUrl: response.data.imageUrl,
+          post: response.data.post,
+          savedPosts: response.data.savedPosts,
+          likedInteractions: response.data.likedInteractions,
+        };
+        setUser(userData);
+        setIsAuthenticated(true);
+
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
   };
   const fetchUserProfileImage = async () => {
     try {
@@ -124,10 +128,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       };
 
       // Send the request with the authentication token included in the headers
-      const response = await axios.get('http://localhost:8080/users/profile-image', {headers, responseType: 'arraybuffer' });
+      const response = await axios.get(
+        "http://localhost:8080/users/profile-image",
+        { headers, responseType: "arraybuffer" }
+      );
 
       // Handle the successful response and use the image data
-      console.log('User profile image:', response.data);
+      console.log("User profile image:", response.data);
 
       // Convert the binary image data to a base64-encoded string
       const base64Image = arrayBufferToBase64(response.data);
@@ -137,14 +144,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       //const updatedUser = { ...user, imageUrl: image };
       // Then update the state
       //setUser(updatedUser);
-
     } catch (error) {
       // Handle errors
-      console.error('Failed to fetch user profile image:', error);
+      console.error("Failed to fetch user profile image:", error);
     }
   };
-  const arrayBufferToBase64 = (buffer:any) => {
-    let binary = '';
+  const arrayBufferToBase64 = (buffer: any) => {
+    let binary = "";
     const bytes = new Uint8Array(buffer);
     const len = bytes.byteLength;
     for (let i = 0; i < len; i++) {
@@ -152,8 +158,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     return btoa(binary);
   };
-
-
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
@@ -163,15 +167,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       accessToken === undefined
     ) {
       navigate("/sign-in");
-    }else{checkAuthUser(); fetchUserProfileImage();}
+    } else {
+      checkAuthUser();
+      fetchUserProfileImage();
+    }
 
     // checkAuthUser();
-   }, []);
+  }, []);
 
   const value = {
     user,
     setUser,
     isLoading,
+    setIsLoading,
     isAuthenticated,
     setIsAuthenticated,
     checkAuthUser,
@@ -179,12 +187,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAccessToken,
     refreshToken,
     setRefreshToken,
-    profileImage
-
+    profileImage,
+    fetch,
+    setFetch,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export const useUserContext = () => useContext(AuthContext);
-

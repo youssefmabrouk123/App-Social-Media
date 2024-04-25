@@ -54,6 +54,10 @@ public class OurUsers implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Interaction> likedInteractions = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "initiator", cascade = CascadeType.ALL)
+    private List<Vote> initiatedVotes = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));

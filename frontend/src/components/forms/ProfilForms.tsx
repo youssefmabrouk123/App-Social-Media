@@ -64,10 +64,10 @@ const ProfileForms = () => {
         toast({
           title: "Please try again",
         });
-      } else {
-        toast({
-          title: "Profile updated successfully ✔",
-        });
+        //navigate('/');
+
+        // If error occurs, throw the error
+        throw error.response.data || error.message;
       }
       // If successful, return success message
       navigate("/");
@@ -82,7 +82,7 @@ const ProfileForms = () => {
     }
   };
 
-
+  
   return (
     <Form {...form}>
       <form

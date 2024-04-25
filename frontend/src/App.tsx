@@ -17,6 +17,8 @@ import PostDetails from './_root/pages/PostDetails';
 import CreateEvent from './_root/pages/CreateEvent';
 import EventDetails from './_root/pages/EventDetails';
 import EditEvent from './_root/pages/EditEvent';
+import CreateVote from './_root/pages/CreateVote';
+import Vote from './_root/pages/Vote';
 
 
 const App = () => {
@@ -43,13 +45,14 @@ const App = () => {
                 <Route path="/create-event/" element={<CreateEvent />} />
                 <Route path="/events/:id" element={<EventDetails />} />
                 <Route path="/update-event/:id" element={<EditEvent />} />
-
+                <Route path="/create-vote/" element={<CreateVote />} />
+                <Route path="/votes/" element={<Vote/>} />
             </Route> 
 
         </Routes>
         <Toaster/>
     </main>
-  )
-}
+  );
+};
 
-export default App
+export default App;

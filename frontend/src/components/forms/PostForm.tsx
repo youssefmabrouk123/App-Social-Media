@@ -88,46 +88,6 @@ const PostForm = ({ post, action }: PostFormProps) => {
     }
   }
 
-  //////////////////////////////////////////////////////////////////////////////////
-    // // ACTION = UPDATE
-    // if (post && action === "Update") {
-    //   const updatedPost = await updatePost({
-    //     ...value,
-    //     postId: post.$id,
-    //     imageId: post.imageId,
-    //     imageUrl: post.imageUrl,
-    //   });
-
-    //   if (!updatedPost) {
-    //     toast({
-    //       title: `${action} post failed. Please try again.`,
-    //     });
-    //   }
-    //   return navigate(`/posts/${post.$id}`);
-    // }
-
-    // // ACTION = CREATE
-    // const newPost = await createPost({
-    //   ...value,
-    //   userId: user.id,
-    // });
-
-    // if (!newPost) {
-    //   toast({
-    //     title: `${action} post failed. Please try again.`,
-    //   });
-    // }
-    // navigate("/");
-  
-    // try {
-    //     const response = await axios.post("http://localhost:8080/auth/create", value);
-    //     console.log(response);
-
-    //     console.log(response.data);
-    //     } catch (error:any) {
-    //     console.error(error.response.data);
-       //////////////////////////////////////////////////////////////////////////////
-  
   
 
   return (

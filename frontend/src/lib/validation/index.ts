@@ -1,4 +1,4 @@
-import { z, SuperRefinement } from "zod";
+import { z } from "zod";
 
 export const SignupValidation = z.object({
   firstname: z.string().min(2, { message: "Too short" }),
@@ -21,13 +21,13 @@ export const SigninValidation = z.object({
 })
 
 
-export const ProfileValidation = z.object({
-  file: z.custom<File[]>(),
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  username: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email(),
-  bio: z.string(),
-});
+// export const ProfileValidation = z.object({
+//   file: z.custom<File[]>(),
+//   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+//   username: z.string().min(2, { message: "Name must be at least 2 characters." }),
+//   email: z.string().email(),
+//   bio: z.string(),
+// });
 
 // ============================================================
 // POST
@@ -50,6 +50,12 @@ export const ProfilValidation = z.object({
   bio: z.string().max(500),
   filiere: z.string(),
   file: z.custom<File[]>(),
+});
+
+
+export const VoteValidation = z.object({
+  question: z.string().min(3,{ message: "This field is required" }).max(50),
+  description: z.string().min(2).max(500),
 });
 //////////////
 export const EventValidation = z.object({

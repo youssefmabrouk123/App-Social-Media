@@ -50,6 +50,18 @@ export type INavLink = {
 
   
 
+  export type CVote = {
+    question: string ;
+    description: string;
+    yesCount: string;
+    noCount: string;
+    date: string;
+    decision: string;
+    DelegueName: string;
+  
+  };
+  
+
 
 
   export type CUser = {

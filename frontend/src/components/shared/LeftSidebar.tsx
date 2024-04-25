@@ -10,7 +10,7 @@ import Loader from "./Loader";
 const LeftSidebar = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { user, setUser, setIsAuthenticated, isLoading,profileImage } = useUserContext();
+  const { user, setUser, setIsAuthenticated, isLoading , profileImage } = useUserContext();
   const [isSuccess, setIsSuccess] = useState(false);
   console.log(user);
 
