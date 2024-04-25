@@ -24,7 +24,6 @@ import { useEffect, useState } from "react";
 
 type PostFormProps = {
   post?: Models.Document;
-  action: "Create" | "Update";
 };
 
 
@@ -39,25 +38,22 @@ interface UserPost {
   creationdate: string;
 }
 
-const UpdatePostForm = ({ post, action }: PostFormProps) => {
+const UpdatePostForm  = ({ post }: PostFormProps) => {
   const [userPost, setUserPost] = useState<UserPost>();
   const [imageURL, setImageURL] = useState<string>('');
-
-  
   const navigate = useNavigate();
   const { id } = useParams();
   const [idPost, setIdPost] = useState<number>(parseInt(id));
-
   const { toast } = useToast();
   const { user } = useUserContext();
+
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
     defaultValues: {
-      caption: ""  ,
+      caption: "",
       file: [],
       location: "",
-      tags:"",
-
+      tags: "",
     },
   });
 
@@ -70,8 +66,6 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
     return window.btoa(binary);
   };
 
- 
-  
   useEffect(() => {
 
     const fetchPostDetail = async (id: any) => {
@@ -79,23 +73,38 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
         const response = await axios.get<UserPost>(`http://localhost:8080/users/posts/all/${id}`);
         const { data } = response;
         setUserPost(data);
-        console.log(userPost);
+
+        console.log("0000");
+        console.log(data);
+
         const imageResponse = await axios.get(`http://localhost:8080/users/posts/image/${id}`, {
           responseType: 'arraybuffer'
         });
         const base64Image = arrayBufferToBase64(imageResponse.data);
         const imageUrl = `data:image/jpeg;base64,${base64Image}`;
         setImageURL(imageUrl);
+        
 
       } catch (error) {
         console.error('Failed to fetch post details:', error);
       }
     };
-
    
     fetchPostDetail(id);
 
   }, [id]);
+
+  useEffect(() => {
+    if (userPost) {
+      const { caption, location, tags , imageData } = userPost;
+      form.setValue("caption", caption);
+      form.setValue("location", location);
+      form.setValue("tags", tags);    
+
+      console.log(".....");
+      console.log(userPost);
+    }
+  }, [userPost, form]);
 
 
   // Handler
@@ -103,23 +112,18 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
     console.log(value);
     console.log(value.file[0]);
 
-    
     try {
-      // Create FormData object to send multipart form data
-      //let newPost:Boolean=false;
-
-
+     
       const formData = new FormData();
       formData.append('caption', value.caption);
       formData.append('location', value.location);
       formData.append('tags', value.tags);
       formData.append('file', value.file[0]);
 
-      const token = localStorage.getItem("accessToken");
 
       // Axios POST request to the API endpoint
       const response = await axios.put(`http://localhost:8080/users/posts/update/${idPost}`, formData);
-      
+      console.log("1111");
       console.log(response);
       if(response.data==!"Post created successfully"){
           toast({
@@ -146,6 +150,10 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
     }
   }
 
+  console.log("22222")
+  console.log(userPost)
+
+
   return (
     <Form {...form}>
       <form
@@ -161,7 +169,7 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
                 <Textarea
                   className="shad-textarea custom-scrollbar"
                   {...field}
-                  defaultValue={userPost?.caption}
+                  // defaultValue={userPost?.caption}
 
                 />
               </FormControl>
@@ -198,7 +206,7 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
           type="text"
           className="shad-input"
           //fieldChange={field.onChange}
-          defaultValue={userPost?.location}
+          // defaultValue={userPost?.location}
           {...field}
 
         />
@@ -219,7 +227,7 @@ const UpdatePostForm = ({ post, action }: PostFormProps) => {
       <FormControl>
         <Input
           placeholder="Art, Expression, Learn"
-          defaultValue={userPost ? userPost.tags : ""}
+          // defaultValue={userPost ? userPost.tags : ""}
           type="text"
           className="shad-input"
           {...field}

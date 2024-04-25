@@ -47,7 +47,7 @@ const LeftSidebar = () => {
                 {user.firstname} {user.lastname}
               </p>
               <p className="small-regular text-light-3">
-                @{user.firstname}_{user.lastname}_
+                @{user.firstname}_{user.lastname}
               </p>
             </div>
           </Link>

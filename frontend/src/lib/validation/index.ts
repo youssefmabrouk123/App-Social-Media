@@ -1,4 +1,4 @@
-import { z, SuperRefinement } from "zod";
+import { z } from "zod";
 
 export const SignupValidation = z.object({
   firstname: z.string().min(2, { message: "Too short" }),
@@ -6,7 +6,7 @@ export const SignupValidation = z.object({
   email: z.string()
     .email({ message: "Invalid email format" })
     .refine((value) => value.endsWith("@ensit.u-tunis.tn"), {
-      message: "Email must end with '@ensit.u-tunis.tn'",
+      message: "Please use your university's email ( ..@ensit.u-tunis.tn )",
     }),
   password: z.string().min(8, { message: "Password must be at least 8 characters." }),
   role: z.string().min(3,{ message: 'Too short'}),
@@ -21,43 +21,34 @@ export const SigninValidation = z.object({
 })
 
 
-export const ProfileValidation = z.object({
-  file: z.custom<File[]>(),
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  username: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email(),
-  bio: z.string(),
-});
+// export const ProfileValidation = z.object({
+//   file: z.custom<File[]>(),
+//   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+//   username: z.string().min(2, { message: "Name must be at least 2 characters." }),
+//   email: z.string().email(),
+//   bio: z.string(),
+// });
 
 // ============================================================
 // POST
 // ============================================================
 export const PostValidation = z.object({
-  caption: z.string().min(5, { message: "Minimum 5 characters." }).max(2200, { message: "Maximum 2,200 caracters" }),
+  caption: z.string().max(500, { message: "Maximum 500 caracters" }),
   file: z.custom<File[]>(),
-  location: z.string().min(1, { message: "This field is required" }).max(1000, { message: "Maximum 1000 characters." }),
+  location: z.string().max(30, { message: "Maximum 30 characters." }),
   tags: z.string(),
 });
 ////
-// ============================================================
-// Profil
-// ============================================================
-// export const ProfilValidation = z.object({
-//   file: z.custom<File[]>(),
-//   firstname: z.string().min(3,{ message: "This field is required" }).max(50),
-//   lastname: z.string().min(3,{ message: "This field is required" }).max(50),
-//   age: z.number().min(18).max(100),
-//   bio: z.string().min(2).max(500),
-//   filiere: z.string().min(2).max(100),
-// });
+
 
 export const ProfilValidation = z.object({
   
   firstname: z.string().min(3,{ message: "This field is required" }).max(50),
   lastname: z.string().min(3,{ message: "This field is required" }).max(50),
-  age: z.string().min(2,{ message: "go home baby this is an engineer school" }),
-  bio: z.string().min(2).max(500),
-  filiere: z.string().min(2).max(100),
+  birthDate: z.string().min(9,{ message: "Please let date be like : YYYY-MM-DD" }).max(11),
+  //age: z.string().min(2,{ message: "Your age must be above 18 !" }).max(30),
+  bio: z.string().max(500),
+  filiere: z.string(),
   file: z.custom<File[]>(),
 });
 
@@ -66,3 +57,13 @@ export const VoteValidation = z.object({
   question: z.string().min(3,{ message: "This field is required" }).max(50),
   description: z.string().min(2).max(500),
 });
+//////////////
+export const EventValidation = z.object({
+  eventName: z.string().min(10).max(30, { message: "Min 10 and Maxi 30 characters" }),
+  eventDescription: z.string().max(500, { message: "Maximum 500 characters" }),
+  location: z.string().max(30, { message: "Maximum 30 characters" }),
+  organizer: z.string().max(30, { message: "Maximum 30 characters" }),
+  eventDate:  z.string().min(8).max(20, { message: "Enter a valide date : YYYY-MM-DD HH:MIN " }),
+  file: z.custom<File[]>(),
+});
+///////////////

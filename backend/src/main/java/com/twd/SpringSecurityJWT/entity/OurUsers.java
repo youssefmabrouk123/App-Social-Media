@@ -4,12 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,8 +28,19 @@ public class OurUsers implements UserDetails {
     private String role;
     private String filiere;
     private int age;
+    private String birthDate;
     private String bio;
     private String image;
+
+    //@JsonBackReference
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Event> event = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Participation> participation = new ArrayList<>();
+
+    ///////
 
     @JsonBackReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -65,6 +74,7 @@ public class OurUsers implements UserDetails {
                 .add("role='" + role + "'")
                 .add("filiere='" + filiere + "'")
                 .add("age=" + age)
+                .add("Birthdate=" + birthDate)
                 .add("bio='" + bio + "'")
                 .add("image='" + image + "'")
                 .toString();

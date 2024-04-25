@@ -53,6 +53,7 @@ const Home = () => {
             imageProfilData: post.imageProfilData ? `data:image/jpeg;base64,${post.imageProfilData}` : undefined,
           }));
           setPosts(postsWithImageData);
+          
         } else {
           console.error('Invalid response format: Missing data or posts array');
         }

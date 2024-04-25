@@ -2,15 +2,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import { PostValidation, ProfilValidation } from "@/lib/validation";
 import { useToast } from "@/components/ui/use-toast";
 import { useUserContext } from "@/context/AuthContext";
@@ -21,62 +13,54 @@ import FileUploader from "../shared/FileUploader";
 import axios from "axios";
 import { useState } from "react";
 
+
 const ProfileForms = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user , profileImage } = useUserContext();
+  const { user, profileImage } = useUserContext();
   const form = useForm<z.infer<typeof ProfilValidation>>({
     resolver: zodResolver(ProfilValidation),
     defaultValues: {
-      firstname:user.firstname,
+      firstname: user.firstname,
       lastname: user.lastname,
-      age: user.age.toString(),
+      //age: calculateAge(user.birthDate).toString(),
+      birthDate : user.birthDate ,
       bio: user.bio,
       filiere: user.filiere,
       file: [],
     },
   });
-  
-    // Handler
-    const handleSubmit = async (value: z.infer<typeof ProfilValidation>) => {
 
-      try {
-        // Create FormData object to send multipart form data
+  // Handler
+  const handleSubmit = async (value: z.infer<typeof ProfilValidation>) => {
 
-        const formData = new FormData();
-        formData.append("firstname", value.firstname);
-        formData.append("lastname", value.lastname);
-        formData.append("age", value.age);
-        formData.append("bio", value.bio);
-        formData.append("filiere", value.filiere);
-        //image*************************************
-        formData.append("file", value.file[0]);
+    try {
 
-        // Axios POST request to the API endpoint
-        const token = localStorage.getItem("accessToken");
-        const response = await axios.put(
-          "http://localhost:8080/users/up",
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`, // Include the Authorization header with the JWT token
-            },
-          }
-        );
+      const formData = new FormData();
+      formData.append("firstname", value.firstname);
+      formData.append("lastname", value.lastname);
+      //formData.append("age", value.age);
+      formData.append("birthDate", value.birthDate);
+      formData.append("bio", value.bio);
+      formData.append("filiere", value.filiere);
+      formData.append("file", value.file[0]);
 
-        console.log(response);
-        if (response.data == !"Post created successfully") {
-          toast({
-            title: "Please try again",
-          });
-        } else {
-          toast({
-            title: "Profile updated successfully ✔",
-          });
+
+      // Axios POST request to the API endpoint
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        "http://localhost:8080/users/up",
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the Authorization header with the JWT token
+          },
         }
-        // If successful, return success message
-        navigate("/");
-      } catch (error: any) {
+      );
+
+      console.log(formData);
+      console.log(response);
+      if (response.data == !"User Updated successfully") {
         toast({
           title: "Please try again",
         });
@@ -85,7 +69,18 @@ const ProfileForms = () => {
         // If error occurs, throw the error
         throw error.response.data || error.message;
       }
-    };
+      // If successful, return success message
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "Please try again",
+      });
+      //navigate('/');
+
+      // If error occurs, throw the error
+      throw error.response.data || error.message;
+    }
+  };
 
   
   return (
@@ -99,7 +94,7 @@ const ProfileForms = () => {
           name="bio"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">bio</FormLabel>
+              <FormLabel className="shad-form_label">Bio</FormLabel>
               <FormControl>
                 <Textarea
                   className="shad-textarea custom-scrollbar"
@@ -117,7 +112,7 @@ const ProfileForms = () => {
           name="file"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">Add Photos</FormLabel>
+              <FormLabel className="shad-form_label">Profil image</FormLabel>
               <FormControl>
                 <FileUploader
                   fieldChange={field.onChange}
@@ -133,14 +128,13 @@ const ProfileForms = () => {
           name="firstname"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">firstname</FormLabel>
+              <FormLabel className="shad-form_label">Firstname</FormLabel>
               <FormControl>
                 <Input
                   type="text"
+                  {...field}
                   defaultValue={user.firstname}
                   className="shad-input"
-                  {...field}
-                  //defaultValue={user.firstname}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -153,13 +147,13 @@ const ProfileForms = () => {
           name="lastname"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">lastname</FormLabel>
+              <FormLabel className="shad-form_label">Lastname</FormLabel>
               <FormControl>
                 <Input
                   type="text"
+                  {...field}
                   className="shad-input"
                   defaultValue={user.lastname}
-                  {...field}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -167,20 +161,18 @@ const ProfileForms = () => {
           )}
         />
 
-        <FormField
+<FormField
           control={form.control}
-          name="age"
+          name="birthDate"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">age</FormLabel>
+              <FormLabel className="shad-form_label">Birth date</FormLabel>
               <FormControl>
                 <Input
-                  type="number"
+                  type="text"
                   className="shad-input"
-                  min={20}
-                  max={35}
-                  defaultValue={user.age.toString()}
                   {...field}
+                  defaultValue={user.birthDate}
                 />
               </FormControl>
               <FormMessage className="shad-form_message" />
@@ -193,19 +185,23 @@ const ProfileForms = () => {
           name="filiere"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="shad-form_label">filiere</FormLabel>
+              <FormLabel className="shad-form_label"></FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  className="shad-input"
-                  defaultValue={user.filiere}
-                  {...field}
-                />
+                <select className="shad-input" {...field}>
+                  <option value="Undefined">Select Filiere</option>
+                  <option value="Informatique">Génie Informatique</option>
+                  <option value="Eléctrique">Génie Eléctrique</option>
+                  <option value="Mathématique">Génie Mathématique</option>
+                  <option value="Industriel">Génie Industriel</option>
+                  <option value="Eléctrique">Génie Eléctrique</option>
+                  <option value="Mécanique">Génie Mécanique</option>
+                </select>
               </FormControl>
               <FormMessage className="shad-form_message" />
             </FormItem>
           )}
         />
+
         <div className="flex gap-4 items-center justify-end">
           <Button
             type="button"

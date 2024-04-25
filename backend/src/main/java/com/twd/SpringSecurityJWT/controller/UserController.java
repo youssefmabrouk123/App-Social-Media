@@ -18,6 +18,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
@@ -81,10 +82,11 @@ public class UserController {
     }
 
     @PutMapping("/up")
-    public String updatePost(
+    public String updateUser(
             @RequestParam("firstname") String firstname,
             @RequestParam("lastname") String lastname,
-            @RequestParam("age") String age,
+            //@RequestParam("age") String age,
+            @RequestParam("birthDate") String birthDate,
             @RequestParam("bio") String bio,
             @RequestParam("filiere") String filiere,
             @RequestParam(value = "file", required = false) MultipartFile file) {
@@ -93,7 +95,7 @@ public class UserController {
         OurUsers user = userService.getUserByMail(username).orElse(null);
 
         if (user == null) {
-            return " error didn't exist";
+            return " error: user didn't exist";
         } else {
             try {
                 if (file != null && !file.isEmpty()) {
@@ -108,17 +110,16 @@ public class UserController {
 
                 user.setFirstname(firstname);
                 user.setLastname(lastname);
-                user.setAge(Integer.parseInt(age));
+                user.setAge(UserService.calculateAge(birthDate));
+                user.setBirthDate(birthDate);
                 user.setBio(bio);
                 user.setFiliere(filiere);
 
-
-
                 userService.userUpdate(user);
 
-                return "Post created successfully";
+                return "User Updated successfully";
             } catch (IOException e) {
-                return "Error creating post: " + e.getMessage();
+                return "Error updating user: " + e.getMessage();
             }
         }
 
@@ -141,6 +142,7 @@ public class UserController {
         if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
         OurUsers user = userService.getUserByMail(username).orElse(null);
@@ -193,6 +195,7 @@ public class UserController {
             reqRes.setUserId(user.getId());
             reqRes.setFirstname(user.getFirstname());
             reqRes.setLastname(user.getLastname());
+            reqRes.setBirthDate(user.getBirthDate());
             reqRes.setEmail(user.getEmail());
 
             byte[] userProfileImage = getUserProfileImage(user.getId());

@@ -38,4 +38,10 @@ public class InteractionService {
     public void deleteInteractionsByPostId(Long postId) {
         interactionRepository.deleteByPostId(postId);
     }
+
+    public List<Interaction> getInteractionsByPostId(Long postId) {
+        return interactionRepository.findByPostId(postId);
+    }
+
+
 }

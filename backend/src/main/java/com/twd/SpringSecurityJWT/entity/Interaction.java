@@ -12,7 +12,6 @@ public class Interaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private LocalDateTime creationDate;
 
 

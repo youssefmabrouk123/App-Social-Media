@@ -8,9 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PostService {
@@ -18,7 +16,11 @@ public class PostService {
     private PostRepository postRepository;
 
 
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\the_last_dance\\App-Social-Media-master\\backend\\postimguploads";
+//    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\the_last_dance\\App-Social-Media-master\\backend\\postimguploads";
+
+    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\postimguploads";
+
+    //    private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\postimguploads";
 
     public String saveFile(MultipartFile file) throws IOException {
         // Ensure the upload directory exists

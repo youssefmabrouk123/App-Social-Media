@@ -38,6 +38,7 @@ export type INavLink = {
     lastname: string;
     email: string;
     role: string;
+    birthDate: string;
     age: string;
     bio: string;
     imageUrl: string;

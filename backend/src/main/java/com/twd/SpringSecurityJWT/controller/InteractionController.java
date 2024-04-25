@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,5 +90,20 @@ public class InteractionController {
         } else {
             return new ResponseEntity<>("Interaction not found for the specified post ID", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<List<String>> getInteractionsByPostId(@PathVariable Long postId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        List<Interaction> interactions = interactionService.getInteractionsByPostId(postId);
+        List<String> userNames = new ArrayList<>();
+        for (Interaction interaction : interactions) {
+            OurUsers user = interaction.getUser();
+            String userName = user.getFirstname() + " " + user.getLastname();
+            userNames.add(userName);
+        }
+        return ResponseEntity.ok(userNames);
     }
 }
