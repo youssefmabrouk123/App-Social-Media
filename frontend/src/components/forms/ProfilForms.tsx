@@ -190,11 +190,11 @@ const ProfileForms = () => {
                 <select className="shad-input" {...field}>
                   <option value="Undefined">Select Filiere</option>
                   <option value="Informatique">Génie Informatique</option>
-                  <option value="Eléctrique">Génie Eléctrique</option>
                   <option value="Mathématique">Génie Mathématique</option>
                   <option value="Industriel">Génie Industriel</option>
                   <option value="Eléctrique">Génie Eléctrique</option>
                   <option value="Mécanique">Génie Mécanique</option>
+                  <option value="Civil">Génie Civil</option>
                 </select>
               </FormControl>
               <FormMessage className="shad-form_message" />

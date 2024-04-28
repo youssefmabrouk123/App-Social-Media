@@ -18,9 +18,9 @@ public class PostService {
 
 //    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\the_last_dance\\App-Social-Media-master\\backend\\postimguploads";
 
-    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\postimguploads";
+//    private static final String UPLOAD_DIR = "C:\\Users\\dell\\Desktop\\App_Social_Media\\backend\\postimguploads";
 
-    //    private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\postimguploads";
+    private static final String UPLOAD_DIR = "C:\\Users\\arway\\Desktop\\New folder (2)\\App-Social-Media\\backend\\postimguploads";
 
     public String saveFile(MultipartFile file) throws IOException {
         // Ensure the upload directory exists
