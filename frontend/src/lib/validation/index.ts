@@ -54,7 +54,7 @@ export const ProfilValidation = z.object({
 
 
 export const VoteValidation = z.object({
-  question: z.string().min(3,{ message: "This field is required" }).max(50),
+  question: z.string().min(3,{ message: "This field is required" }).max(80),
   description: z.string().min(2).max(500),
 });
 //////////////

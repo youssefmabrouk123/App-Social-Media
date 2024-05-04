@@ -142,40 +142,38 @@ const Profile = () => {
                 @{currentUser.firstname + "_" + currentUser.lastname}
               </p>
             </div>
+            <div className="flex justify-left gap-4 mt-5">
+              <div className={`${user.id == currentUser.id || "hidden"}`}>
 
-            <div className="flex gap-8 mt-10 items-center justify-center xl:justify-start flex-wrap z-20">
-              <StatBlock value={posts ? posts.length : 0} label="Posts" />
+                <Link
+                  to={`/update-profile`}
+                  className={`h-12 bg-dark-4 px-5 text-light-1 flex-center gap-2 rounded-lg ${user.id !== currentUser.id && "hidden"}`}>
+                  <img
+                    src={"/assets/icons/edit.svg"}
+                    alt="edit"
+                    width={20}
+                    height={20}
+                  />
+                  <p className="flex whitespace-nowrap small-medium">
+                    Edit Profile
+                  </p>
+                </Link>
+              </div>
+            </div>
+            <div className="flex gap-8 mt-6 items-center justify-center xl:justify-start flex-wrap z-20">
+              <StatBlock value={posts ? posts.length : 0} label="Posts created" />
               {/* <StatBlock value={20} label="" />
               <StatBlock value={20} label="Following" /> */}
             </div>
 
-            <p className="small-medium md:base-medium text-center xl:text-left mt-7 max-w-screen-sm">
+            <p className="small-medium md:base-medium text-center xl:text-left mt-4 max-w-screen-sm">
               {currentUser.bio}
             </p>
-          </div>
-
-          <div className="flex justify-center gap-4">
-            <div className={`${user.id == currentUser.id || "hidden"}`}>
-              <Link
-                to={`/update-profile`}
-                className={`h-12 bg-dark-4 px-5 text-light-1 flex-center gap-2 rounded-lg ${user.id !== currentUser.id && "hidden"}`}
-              >
-                <img
-                  src={"/assets/icons/edit.svg"}
-                  alt="edit"
-                  width={20}
-                  height={20}
-                />
-                <p className="flex whitespace-nowrap small-medium">
-                  Edit Profile
-                </p>
-              </Link>
-            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex max-w-5xl w-full" >
+      <div className="flex max-w-5xl w-full" style={{ marginTop: '-3%' }} >
         <Button
           className={`profile-tab h-14 rounded-l-lg  ${flipper ? "" : "!bg-dark-3"} `}
           onClick={() => setFlipper(true)}
@@ -190,7 +188,7 @@ const Profile = () => {
         </Button>
 
         <Button
-          className={`profile-tab h-14 rounded-l-lg ml-7 ${!flipper ? "" : "!bg-dark-3"} `}
+          className={`profile-tab h-14 rounded-l-lg ml-7 ${!flipper ? "" : "!bg-dark-4"} `}
           onClick={() => setFlipper(false)}
         >
           <img

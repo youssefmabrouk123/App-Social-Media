@@ -6,6 +6,7 @@ import UserCard from '@/components/shared/UserCard';
 const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -27,24 +28,38 @@ const AllUsers = () => {
     fetchUsers();
   }, []);
 
+  const filteredUsers = users.filter(user => {
+    const searchLowerCase = searchTerm.toLowerCase();
+    return (
+      user.firstname.toLowerCase().includes(searchLowerCase) ||
+      user.lastname.toLowerCase().includes(searchLowerCase) ||
+      user.email.toLowerCase().includes(searchLowerCase)
+    );
+  });
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
   if (isLoading) {
     return <Loader />;
   }
 
   return (
     <div className="common-container">
-      
-    <div className="user-container">
-
+      <div className="user-container">
         <h2 className="h3-bold md:h2-bold text-left w-full">All Users</h2>
         <div className="xl:w-96">
           <div className="flex w-full flex-wrap items-stretch">
               <input
-                  type="search"
-                  className="relative m-0 block flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-4 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
-                  placeholder="Search"
-                  aria-label="Search"
-                  aria-describedby="button-addon2" />
+                type="search"
+                className="relative m-0 block flex-auto rounded border border-solid border-neutral-300 bg-transparent bg-clip-padding px-4 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-white focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)]  focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+                placeholder="Search"
+                aria-label="Search"
+                aria-describedby="button-addon2"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
 
               {/* <!--Search icon--> */}
               <span 
@@ -62,29 +77,28 @@ const AllUsers = () => {
                   </svg>
               </span>
           </div>
-      </div>
-      {/* User list rendering code */}
-      {users && users.length > 0 ? (
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap', // Allow items to wrap to the next line
-          justifyContent: 'center', 
-          maxWidth: '100%', 
-          overflowX: 'auto',
-        }}>
-          {users.map((user) => (
-            <UserCard
-              key={user.userId}
-              user={user}
-            />
-
-
-          ))}
         </div>
-      ) : (
-        <p>No users found</p>
-      )}
-    </div> </div>
+        {/* User list rendering code */}
+        {filteredUsers && filteredUsers.length > 0 ? (
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap', // Allow items to wrap to the next line
+            justifyContent: 'center', 
+            maxWidth: '100%', 
+            overflowX: 'auto',
+          }}>
+            {filteredUsers.map((user) => (
+              <UserCard
+                key={user.userId}
+                user={user}
+              />
+            ))}
+          </div>
+        ) : (
+          <p>No users found</p>
+        )}
+      </div>
+    </div>
   );
 };
 
